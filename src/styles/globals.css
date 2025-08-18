@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Base sizes that scale with viewport */
+  --scrollbar-min: 6px;
+  --scrollbar-max: 12px;
+  --border-min: 1px;
+  --border-max: 2px;
+}
+
+/* Base scrollbar styling */
+::-webkit-scrollbar {
+  /* Fluid width that scales smoothly with viewport */
+  width: clamp(var(--scrollbar-min), 0.8vw, var(--scrollbar-max));
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: clamp(2px, 0.2vw, 4px);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: clamp(2px, 0.2vw, 4px);
+  /* Border scales with scrollbar size */
+  border: clamp(var(--border-min), 0.15vw, var(--border-max)) solid #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Firefox scrollbar - adjust size based on viewport */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+@media screen and (max-width: 768px) {
+  * {
+    /* Ensure Firefox scrollbar stays proportional on smaller screens */
+    scrollbar-width: thin;
+  }
+}
+
+/* Ensure consistent layout with scrollbar */
+html, body {
+  scrollbar-gutter: stable;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  /* Prevent bounce/rubber-band effect */
+  overscroll-behavior: none;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #111827; /* A default dark background */
+}
+
+/* Prevent horizontal overflow */
+html, body, #__next {
+  min-height: 100%;
+  overflow-x: hidden;
+  max-width: 100vw;
+}

@@ -1,7 +1,7 @@
 // src/app/layout.tsx
-import React from "react";
-import TopNav from "@/components/TopNav";
 import "./globals.css";
+import TopNav from "@/components/TopNav";
+import React from "react";
 
 export const metadata = {
   title: "SafeAssets",
@@ -12,10 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head />
-      <body className="min-h-screen bg-gray-50 text-gray-900">
+      <body className="bg-gray-900 text-white">
         <TopNav />
-        {/* reserve space for fixed nav (matches TopNav height) */}
-        <div className="pt-16">{children}</div>
+        <main className="relative">{children}</main>
       </body>
     </html>
   );
