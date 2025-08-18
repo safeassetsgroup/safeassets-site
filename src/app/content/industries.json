@@ -1,44 +1,14 @@
 [
   {
     "slug": "agriculture",
-    "title": "Agriculture",
-    "tagline": "Seasonal fleets, zero stockouts.",
-    "poster": "/industries/agriculture.jpg"
+    "name": "Agriculture",
+    "description": "Seasonal fleets, zero stockouts.",
+    "image": "agriculture.jpg"
   },
   {
     "slug": "construction",
-    "title": "Construction",
-    "tagline": "Site-ready uptime and compliance.",
-    "poster": "/industries/construction.jpg"
-  },
-  {
-    "slug": "mining",
-    "title": "Mining",
-    "tagline": "Pit-to-port reliability.",
-    "poster": "/industries/mining.jpg"
-  },
-  {
-    "slug": "transport",
-    "title": "Transport",
-    "tagline": "Fleet health and safety first.",
-    "poster": "/industries/transport.jpg"
-  },
-  {
-    "slug": "energy",
-    "title": "Energy",
-    "tagline": "Generation and network reliability.",
-    "poster": "/industries/energy.jpg"
-  },
-  {
-    "slug": "defense",
-    "title": "Defense",
-    "tagline": "Private, secure, audit-ready.",
-    "poster": "/industries/defense.jpg"
-  },
-  {
-    "slug": "commercial-strata",
-    "title": "Commercial Strata",
-    "tagline": "Facilities uptime and transparency.",
-    "poster": "/industries/strata.jpg"
+    "name": "Construction",
+    "description": "Site-ready uptime and compliance.",
+    "image": "construction.jpg"
   }
 ]

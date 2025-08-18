@@ -13,14 +13,12 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",                          // <-- ✅ Needed for path aliases
+    "baseUrl": ".",                 // ✅ Needed for alias
     "paths": {
-      "@/*": ["src/*"]                       // <-- ✅ Supports @/components, @/content, etc.
+      "@/*": ["src/*"]             // ✅ Use @/components/..., @/app/...
     },
     "plugins": [
-      {
-        "name": "next"
-      }
+      { "name": "next" }
     ]
   },
   "include": [
@@ -31,4 +29,5 @@
   ],
   "exclude": ["node_modules"]
 }
+
 

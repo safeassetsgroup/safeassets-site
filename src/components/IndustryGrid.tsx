@@ -1,4 +1,4 @@
-// src/components/IndustryGrid.tsx
+'use client';
 import Image from "next/image";
 
 type Item = {
@@ -10,32 +10,27 @@ type Item = {
 
 export default function IndustryGrid({ items }: { items: Item[] }) {
   return (
-    <section className="bg-[#282D33]">
-      <div className="mx-auto max-w-6xl px-6">
-        <h2 className="text-xl font-semibold text-white mb-3">Industries</h2>
-
+    <section className="bg-[#282D33] px-6">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-white text-2xl font-semibold mb-4">Industries</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {items.map((it) => (
             <a
               key={it.slug}
               href={`/industries/${it.slug}`}
-              className="group relative overflow-hidden rounded-xl ring-1 ring-white/10 bg-[#1E2328]"
+              className="group block bg-[#1E2328] rounded overflow-hidden ring-1 ring-white/10"
             >
               <div className="relative h-40 w-full">
                 <Image
                   src={it.poster}
                   alt={it.title}
                   fill
-                  sizes="(max-width:768px) 50vw, (max-width:1024px) 33vw, 25vw"
-                  className="object-cover transition duration-300 group-hover:scale-[1.03] group-hover:opacity-80"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
-
-              <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
+              <div className="p-2">
                 <div className="text-white font-semibold">{it.title}</div>
-                {it.tagline && (
-                  <div className="text-sm text-[#B8BDC4]">{it.tagline}</div>
-                )}
+                {it.tagline && <div className="text-sm text-[#B8BDC4]">{it.tagline}</div>}
               </div>
             </a>
           ))}
@@ -44,3 +39,5 @@ export default function IndustryGrid({ items }: { items: Item[] }) {
     </section>
   );
 }
+
+
