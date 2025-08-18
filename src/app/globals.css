@@ -1,17 +1,20 @@
 @import "tailwindcss";
 
+/* Root Variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --primary-color: #F57C00; /* Updated to match logo orange */
+  --primary-hover: #FF9800; /* Slightly lighter shade for hover effect */
+  --secondary-color: #1E293B;
+  --secondary-hover: #334155;
+  --disabled-bg: #6B7280;
+  --disabled-text: #D1D5DB;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* Dark Mode Variables */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,8 +22,123 @@
   }
 }
 
+/* Base Styles */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* Section Styles */
+.section {
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+
+.section-light {
+  background-color: #F8FAFC;
+}
+
+.section-dark {
+  background-color: var(--secondary-color);
+  color: #FFFFFF;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  margin: 0;
+}
+
+h1 {
+  color: var(--primary-color);
+}
+
+h2 {
+  color: var(--secondary-color);
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white; /* ensure default */
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+a.btn-primary {
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: scale(1.05);
+}
+
+.btn-disabled {
+  background-color: var(--disabled-bg);
+  color: var(--disabled-text);
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: not-allowed;
+}
+
+/* Link Styles */
+a:not(.btn-primary) {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:not(.btn-primary):hover {
+  color: var(--primary-hover);
+}
+
+/* Utility Classes */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* hide horizontal scrollbar while preserving scroll */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* visible horizontal scrollbar for industries scroller */
+.industries-scroll::-webkit-scrollbar {
+  height: 10px;
+}
+.industries-scroll::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.06);
+}
+.industries-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.18);
+  border-radius: 999px;
+}
+.industries-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.18) rgba(255,255,255,0.06);
 }

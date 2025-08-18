@@ -2,13 +2,50 @@
   {
     "slug": "agriculture",
     "name": "Agriculture",
+    "image": "agriculture.jpg",
     "description": "Seasonal fleets, zero stockouts.",
-    "image": "agriculture.jpg"
+    "ad": {
+      "image": "/ads/agriculture-sensor.jpg",
+      "title": "Fleet Sensors & Telematics",
+      "cta": "Learn more",
+      "link": "/products/fleet-sensors"
+    }
   },
   {
     "slug": "construction",
     "name": "Construction",
     "description": "Site-ready uptime and compliance.",
-    "image": "construction.jpg"
+    "image": "/industries/construction.jpg"
+  },
+  {
+    "slug": "mining",
+    "name": "Mining",
+    "description": "Pit-to-port reliability.",
+    "image": "/industries/mining.jpg"
+  },
+  {
+    "slug": "transport",
+    "name": "Transport",
+    "description": "Fleet health and safety first.",
+    "image": "/industries/transport.jpg"
+  },
+  {
+    "slug": "energy",
+    "name": "Energy",
+    "description": "Generation and network reliability.",
+    "image": "/industries/energy.jpg"
+  },
+  {
+    "slug": "defense",
+    "name": "Defence",
+    "description": "Private, secure, audit-ready.",
+    "image": "/industries/defense.jpg"
+  },
+  {
+    "slug": "commercial-strata",
+    "name": "Commercial Strata",
+    "description": "Facilities uptime and transparency.",
+    "image": "/industries/strata.jpg"
   }
 ]
+

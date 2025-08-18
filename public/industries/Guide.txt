@@ -1,0 +1,29 @@
+🖼 How to Prepare Them
+
+Use https://squoosh.app/ (free online tool by Google)
+
+Drag in your photo
+
+Resize to 800×600
+
+Export as WebP quality ~75%
+
+Save to:
+
+public/industries/{slug}.webp
+
+📏 Recommended Size
+
+Dimensions: 800×600 px (landscape orientation works best for grid)
+
+Format:
+
+.webp (best balance of quality & file size)
+
+.jpg if webp not available
+
+.png only if transparency is needed
+
+File Size: Aim for < 200 KB per image
+
+Naming: lowercase, no spaces, match your slug in industries.json
