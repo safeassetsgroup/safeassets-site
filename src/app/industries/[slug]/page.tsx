@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import industries from "@/app/content/industries.json";
+import SpecialOfferBadge from "@/components/SpecialOfferBadge";
 import MediaBackground from "@/components/MediaBackground";
 import Link from "next/link";
-import { buildCandidatesForIndustry, probeCandidate } from "@/lib/mediaCandidates";
 
-export default function IndustryPage() {
+export default function IndustryPage({ params }: { params: { slug: string } }) {
   const { slug } = useParams() as { slug?: string };
   const router = useRouter();
   const [industry, setIndustry] = useState<any | null>(null);
@@ -73,26 +73,38 @@ export default function IndustryPage() {
     );
   }
 
+  // heroContent reused for both placeholder and MediaBackground children
+  const heroContent = (
+    <div className="relative z-20 max-w-4xl mx-auto py-20 text-white">
+      {/* Position badge absolutely relative to this container */}
+      <SpecialOfferBadge
+        price="$33"
+        period="/week per unit"
+        note="First 100 assets • No setup fees"
+        // position: top-right corner of hero; adjust classes to move it
+        className="absolute -top-6 right-4 md:-top-10 md:right-10"
+        showOnMobile={false}
+      />
+
+      <h1 className="text-4xl font-bold">{industry?.name}</h1>
+      <p className="mt-2 max-w-3xl text-gray-200">{industry?.description}</p>
+
+      <div className="mt-6">
+        <Link href="/industries" className="inline-block bg-white/10 text-white px-4 py-2 rounded">
+          Back to industries
+        </Link>
+      </div>
+    </div>
+  );
+
   return (
-    <main>
-      {/* while resolving, show placeholder hero to avoid layout shift */}
-      <MediaBackground
-        videoUrl={foundMedia?.type === "video" ? foundMedia?.url : undefined}
-        imageUrl={foundMedia?.type === "image" ? foundMedia?.url : undefined}
-        height="h-[50vh]"
-        padBottomClass="pb-12"
-      >
-        <div className="text-white">
-          <h1 className="text-4xl font-bold">{industry.name}</h1>
-          <p className="mt-2 max-w-3xl text-gray-200">{industry.description}</p>
-          <div className="mt-6">
-            <Link href="/industries" className="inline-block bg-white/10 text-white px-4 py-2 rounded">
-              Back to industries
-            </Link>
-          </div>
-        </div>
+    <main className="min-h-screen bg-[#282D33] text-white">
+      <MediaBackground folder={`industries/${params.slug}`} height="h-[50vh]" padBottomClass="pb-12">
+        {/* children go into MediaBackground's content area; badge will absolutely position inside */}
+        {heroContent}
       </MediaBackground>
 
+      {/* rest of page */}
       <section className="max-w-4xl mx-auto px-6 py-12">
         <h2 className="text-2xl font-semibold mb-4">Overview</h2>
         <p className="text-gray-700 mb-6">{industry.longDescription ?? industry.description ?? ""}</p>

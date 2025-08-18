@@ -3,12 +3,12 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import SpecialOfferBadge from "@/components/SpecialOfferBadge";
 
 export default function TopNav() {
   const [imgError, setImgError] = useState(false);
 
   return (
-    // fixed at top, solid background for good contrast, consistent height (h-16)
     <nav
       className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm h-16 flex items-center"
       role="navigation"
@@ -50,7 +50,8 @@ export default function TopNav() {
           </Link>
         </div>
 
-        <div className="ml-auto">
+        {/* Right area: keep horizontal layout; badge to the right of Login */}
+        <div className="ml-4 flex items-center gap-3">
           {/* Login button (coming soon) — visually disabled */}
           <button
             type="button"
@@ -61,6 +62,14 @@ export default function TopNav() {
             <span className="mr-2">Login</span>
             <span className="text-xs uppercase bg-transparent px-2 py-0.5 rounded text-gray-500">Coming Soon</span>
           </button>
+
+          {/* compact badge placed to the RIGHT of the Login button */}
+          <SpecialOfferBadge
+            variant="nav"
+            showOnMobile={true}
+            className="mr-2"
+            href="/contact"
+          />
         </div>
       </div>
     </nav>
