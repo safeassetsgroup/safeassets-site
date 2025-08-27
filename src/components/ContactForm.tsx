@@ -37,15 +37,25 @@ export default function OffersPage() {
   const inputCls =
     "w-full rounded-md border border-gray-600 bg-gray-800/70 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500";
 
+  // Safe helper for reCAPTCHA (skips if not configured)
+  const getRecaptchaToken = async () => {
+    const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+    const g = (typeof window !== "undefined" ? (window as any).grecaptcha : undefined);
+    if (g && siteKey) {
+      try {
+        return await g.execute(siteKey, { action: "submit" });
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  };
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const token = await grecaptcha.execute(
-        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!, // add this in .env.local
-        { action: "submit" }
-      );
+      const token = await getRecaptchaToken();
 
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -53,20 +63,18 @@ export default function OffersPage() {
         body: JSON.stringify({ contact, business, assets, token }),
       });
 
-      if (res.ok) {
-        alert("Thanks! We’ll contact you shortly.");
-        setContact({ name: "", email: "", phone: "" });
-        setBusiness({ name: "", abn: "" });
-        setAssets([
-          { assetNumber: "", make: "", model: "", hours: "", telemetry: "no" },
-        ]);
-      } else {
-        const err = await res.json().catch(() => ({}));
-        alert("Submission failed: " + (err.error || "Please try again"));
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error || "Submission failed.");
+        return;
       }
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong.");
+
+      alert("Thanks! We’ll contact you shortly.");
+      setContact({ name: "", email: "", phone: "" });
+      setBusiness({ name: "", abn: "" });
+      setAssets([{ assetNumber: "", make: "", model: "", hours: "", telemetry: "no" }]);
+    } catch (err: any) {
+      alert(err?.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }
