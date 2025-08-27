@@ -21,7 +21,10 @@ export default function Hero() {
         </p>
 
         <div className="mt-8 flex flex-wrap gap-4">
-          <Link href="/contact" className="inline-flex items-center px-6 py-3 rounded-md bg-orange-500 text-white font-semibold hover:bg-orange-600">
+          <Link
+            href="/contact"
+            className="inline-flex items-center px-6 py-3 rounded-md bg-orange-500 text-white font-semibold hover:bg-orange-600"
+          >
             Talk to us
           </Link>
           <Link href="/industries" className="inline-flex items-center px-6 py-3 rounded-md bg-white/15 text-white font-semibold backdrop-blur hover:bg-white/25">

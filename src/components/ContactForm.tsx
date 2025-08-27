@@ -17,9 +17,9 @@ type Asset = {
 export default function OffersPage() {
   const [contact, setContact] = useState({ name: "", email: "", phone: "" });
   const [business, setBusiness] = useState({ name: "", abn: "" });
-  const [assets, setAssets] = useState<Asset[]>([
-    { assetNumber: "", make: "", model: "", hours: "", telemetry: "no" },
-  ]);
+  const [assets, setAssets] = useState<Asset[]>(
+    [{ assetNumber: "", make: "", model: "", hours: "", telemetry: "no" }]
+  );
   const [loading, setLoading] = useState(false);
 
   const addAsset = () =>
@@ -146,16 +146,7 @@ export default function OffersPage() {
 
           {/* Assets */}
           <section>
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-white">Assets</h2>
-              <button
-                type="button"
-                onClick={addAsset}
-                className="px-4 py-2 rounded-md bg-orange-500 text-white font-semibold hover:bg-orange-600"
-              >
-                Add asset
-              </button>
-            </div>
+            <h2 className="text-xl font-semibold text-white">Assets</h2>
 
             <div className="mt-4 space-y-4">
               {assets.map((a, i) => (
@@ -167,9 +158,7 @@ export default function OffersPage() {
                     className={`${inputCls} sm:col-span-1`}
                     placeholder="Asset #"
                     value={a.assetNumber}
-                    onChange={(e) =>
-                      updateAsset(i, "assetNumber", e.target.value)
-                    }
+                    onChange={(e) => updateAsset(i, "assetNumber", e.target.value)}
                   />
                   <input
                     className={`${inputCls} sm:col-span-1`}
@@ -192,16 +181,10 @@ export default function OffersPage() {
                   <select
                     className={`${inputCls} sm:col-span-1`}
                     value={a.telemetry}
-                    onChange={(e) =>
-                      updateAsset(i, "telemetry", e.target.value)
-                    }
+                    onChange={(e) => updateAsset(i, "telemetry", e.target.value)}
                   >
-                    <option className="bg-gray-900" value="no">
-                      Telemetry: No
-                    </option>
-                    <option className="bg-gray-900" value="yes">
-                      Telemetry: Yes
-                    </option>
+                    <option className="bg-gray-900" value="no">Telemetry: No</option>
+                    <option className="bg-gray-900" value="yes">Telemetry: Yes</option>
                   </select>
                   <button
                     type="button"
@@ -212,6 +195,17 @@ export default function OffersPage() {
                   </button>
                 </div>
               ))}
+            </div>
+
+            {/* Add button moved below the list */}
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={addAsset}
+                className="px-4 py-2 rounded-md bg-orange-500 text-white font-semibold hover:bg-orange-600"
+              >
+                Add asset
+              </button>
             </div>
           </section>
 
