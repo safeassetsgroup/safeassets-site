@@ -1,55 +1,65 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import { Resend } from "resend";
 
-const RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET_KEY;
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY! // backend only
+);
 
-async function verifyRecaptcha(token: string | undefined) {
-  if (!RECAPTCHA_SECRET || !token) return { ok: false, reason: "missing-recaptcha-config" };
-  const params = new URLSearchParams();
-  params.append("secret", RECAPTCHA_SECRET);
-  params.append("response", token);
-  try {
-    const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-      method: "POST",
-      body: params,
-    });
-    const data = await res.json();
-    // v3 returns score; require success and reasonable score
-    if (!data.success) return { ok: false, reason: "recaptcha-failed", details: data };
-    const score = typeof data.score === "number" ? data.score : 1;
-    if (score < 0.45) return { ok: false, reason: "low-score", score, details: data };
-    return { ok: true, score, details: data };
-  } catch (err) {
-    return { ok: false, reason: "recaptcha-error" };
-  }
-}
+const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { name, email, message, recaptchaToken } = body ?? {};
+    const { contact, business, assets, token } = await req.json();
 
-    // verify recaptcha first
-    const recRes = await verifyRecaptcha(recaptchaToken);
-    if (!recRes.ok) {
-      return NextResponse.json({ error: "reCAPTCHA verification failed." , details: recRes }, { status: 400 });
+    // ✅ Verify reCAPTCHA
+    const secret = process.env.RECAPTCHA_SECRET_KEY!;
+    const verify = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ secret, response: token }),
+    }).then((r) => r.json());
+
+    if (!verify.success || (verify.score ?? 0) < 0.5) {
+      return NextResponse.json({ error: "reCAPTCHA failed" }, { status: 400 });
     }
 
-    // basic required fields
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
+    // ✅ Insert into Supabase
+    const { error } = await supabase.from("contact_messages").insert([
+      {
+        name: contact.name,
+        email: contact.email,
+        message: JSON.stringify({
+          phone: contact.phone,
+          business,
+          assets,
+        }),
+      },
+    ]);
+
+    if (error) {
+      console.error(error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // validate email
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) {
-      return NextResponse.json({ error: "Invalid email." }, { status: 400 });
-    }
+    // ✅ Send email notification
+    await resend.emails.send({
+      from: "Safe Assets Group <notifications@yourdomain.com>",
+      to: "youremail@example.com", // replace with your email
+      subject: "New Contact Form Submission",
+      html: `
+        <h2>New Submission from ${contact.name}</h2>
+        <p><strong>Email:</strong> ${contact.email}</p>
+        <p><strong>Phone:</strong> ${contact.phone}</p>
+        <p><strong>Business:</strong> ${business.name} (ABN: ${business.abn || "N/A"})</p>
+        <pre>${JSON.stringify(assets, null, 2)}</pre>
+      `,
+    });
 
-    // TODO: send email/store message. Currently log and return success.
-    // eslint-disable-next-line no-console
-    console.log("Contact message received:", { name, email, message });
-
-    return NextResponse.json({ ok: true, message: "Accepted." }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 }

@@ -1,173 +1,223 @@
 "use client";
+import { useState } from "react";
 
-import { useEffect, useState } from "react";
-
-type Errors = {
-  name?: string;
-  email?: string;
-  message?: string;
+/* global grecaptcha */
+declare const grecaptcha: {
+  execute(siteKey: string, opts: { action: string }): Promise<string>;
 };
 
-const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+type Asset = {
+  assetNumber: string;
+  make: string;
+  model: string;
+  hours: string;
+  telemetry: "yes" | "no";
+};
 
-export default function ContactForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState<Errors>({});
-  const [statusMsg, setStatusMsg] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+export default function OffersPage() {
+  const [contact, setContact] = useState({ name: "", email: "", phone: "" });
+  const [business, setBusiness] = useState({ name: "", abn: "" });
+  const [assets, setAssets] = useState<Asset[]>([
+    { assetNumber: "", make: "", model: "", hours: "", telemetry: "no" },
+  ]);
+  const [loading, setLoading] = useState(false);
 
-  function validate(): boolean {
-    const e: Errors = {};
-    if (!name.trim()) e.name = "Name is required.";
-    if (!email.trim()) e.email = "Email is required.";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Enter a valid email address.";
-    if (!message.trim()) e.message = "Message is required.";
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  }
+  const addAsset = () =>
+    setAssets((a) => [
+      ...a,
+      { assetNumber: "", make: "", model: "", hours: "", telemetry: "no" },
+    ]);
+  const removeAsset = (i: number) =>
+    setAssets((a) => a.filter((_, idx) => idx !== i));
+  const updateAsset = (i: number, field: keyof Asset, value: string) =>
+    setAssets((a) =>
+      a.map((row, idx) => (idx === i ? { ...row, [field]: value } : row))
+    );
 
-  // dynamically inject recaptcha script if site key present
-  useEffect(() => {
-    if (!SITE_KEY) return;
-    if (document.querySelector(`script[data-recaptcha="v3"]`)) return;
-    const s = document.createElement("script");
-    s.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`;
-    s.async = true;
-    s.defer = true;
-    s.setAttribute("data-recaptcha", "v3");
-    document.body.appendChild(s);
-  }, []);
+  const inputCls =
+    "w-full rounded-md border border-gray-600 bg-gray-800/70 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500";
 
-  async function getRecaptchaToken(): Promise<string | null> {
-    if (!SITE_KEY) return null;
-    // wait for grecaptcha to be available
-    const grecaptcha = (window as any).grecaptcha;
-    if (!grecaptcha || !grecaptcha.execute) {
-      // small delay then try once more
-      await new Promise((r) => setTimeout(r, 500));
-    }
-    if ((window as any).grecaptcha && (window as any).grecaptcha.execute) {
-      try {
-        const token = await (window as any).grecaptcha.execute(SITE_KEY, { action: "contact" });
-        return token;
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  }
-
-  async function onSubmit(e: React.FormEvent) {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatusMsg(null);
-
-    if (!validate()) return;
-
-    setSubmitting(true);
+    setLoading(true);
 
     try {
-      const recaptchaToken = await getRecaptchaToken();
+      const token = await grecaptcha.execute(
+        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!, // add this in .env.local
+        { action: "submit" }
+      );
 
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          message,
-          recaptchaToken,
-        }),
+        body: JSON.stringify({ contact, business, assets, token }),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        setStatusMsg(data?.error ?? "Submission failed.");
+      if (res.ok) {
+        alert("Thanks! We’ll contact you shortly.");
+        setContact({ name: "", email: "", phone: "" });
+        setBusiness({ name: "", abn: "" });
+        setAssets([
+          { assetNumber: "", make: "", model: "", hours: "", telemetry: "no" },
+        ]);
       } else {
-        setStatusMsg("Message sent. Thank you!");
-        setName("");
-        setEmail("");
-        setMessage("");
-        setErrors({});
+        const err = await res.json().catch(() => ({}));
+        alert("Submission failed: " + (err.error || "Please try again"));
       }
-    } catch {
-      setStatusMsg("Unexpected error. Try again later.");
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong.");
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4" noValidate>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Name</span>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onBlur={() => { if (!name.trim()) setErrors((s) => ({ ...s, name: "Name is required." })); else setErrors((s) => ({ ...s, name: undefined })); }}
-            className={`mt-1 block w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-orange-200 focus:outline-none ${errors.name ? "border-red-300" : "border-gray-200"}`}
-            aria-invalid={!!errors.name}
-            aria-describedby={errors.name ? "name-error" : undefined}
-          />
-          {errors.name && <p id="name-error" className="mt-1 text-sm text-red-600">{errors.name}</p>}
-        </label>
+    <div className="min-h-screen bg-gray-950 text-white">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <h1 className="text-3xl font-bold text-white">Special Offer</h1>
+        <p className="mt-2 text-gray-300">
+          Enter your details and assets to claim the offer.
+        </p>
 
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700">Email</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onBlur={() => { if (!email.trim()) setErrors((s) => ({ ...s, email: "Email is required." })); else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setErrors((s) => ({ ...s, email: "Enter a valid email address." })); else setErrors((s) => ({ ...s, email: undefined })); }}
-            className={`mt-1 block w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-orange-200 focus:outline-none ${errors.email ? "border-red-300" : "border-gray-200"}`}
-            aria-invalid={!!errors.email}
-            aria-describedby={errors.email ? "email-error" : undefined}
-          />
-          {errors.email && <p id="email-error" className="mt-1 text-sm text-red-600">{errors.email}</p>}
-        </label>
-      </div>
+        <form onSubmit={onSubmit} className="mt-8 space-y-8">
+          {/* Contact */}
+          <section>
+            <h2 className="text-xl font-semibold text-white">Contact</h2>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <input
+                className={inputCls}
+                placeholder="Full name"
+                value={contact.name}
+                onChange={(e) =>
+                  setContact({ ...contact, name: e.target.value })
+                }
+              />
+              <input
+                className={inputCls}
+                placeholder="Email"
+                type="email"
+                value={contact.email}
+                onChange={(e) =>
+                  setContact({ ...contact, email: e.target.value })
+                }
+              />
+              <input
+                className={inputCls}
+                placeholder="Phone"
+                value={contact.phone}
+                onChange={(e) =>
+                  setContact({ ...contact, phone: e.target.value })
+                }
+              />
+            </div>
+          </section>
 
-      <label className="block">
-        <span className="text-sm font-medium text-gray-700">Message</span>
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onBlur={() => { if (!message.trim()) setErrors((s) => ({ ...s, message: "Message is required." })); else setErrors((s) => ({ ...s, message: undefined })); }}
-          rows={6}
-          className={`mt-1 block w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-orange-200 focus:outline-none ${errors.message ? "border-red-300" : "border-gray-200"}`}
-          aria-invalid={!!errors.message}
-          aria-describedby={errors.message ? "message-error" : undefined}
-        />
-        {errors.message && <p id="message-error" className="mt-1 text-sm text-red-600">{errors.message}</p>}
-      </label>
+          {/* Business */}
+          <section>
+            <h2 className="text-xl font-semibold text-white">Business</h2>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input
+                className={inputCls}
+                placeholder="Business name"
+                value={business.name}
+                onChange={(e) =>
+                  setBusiness({ ...business, name: e.target.value })
+                }
+              />
+              <input
+                className={inputCls}
+                placeholder="ABN (optional)"
+                value={business.abn}
+                onChange={(e) =>
+                  setBusiness({ ...business, abn: e.target.value })
+                }
+              />
+            </div>
+          </section>
 
-      <div className="flex items-center gap-4 mt-2">
-        <button
-          type="submit"
-          disabled={submitting}
-          className="inline-flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-black font-semibold px-5 py-2 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-orange-300 disabled:opacity-60"
-          style={{ color: "#000" }}
-        >
-          {submitting ? "Sending…" : "Send message"}
-        </button>
+          {/* Assets */}
+          <section>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-white">Assets</h2>
+              <button
+                type="button"
+                onClick={addAsset}
+                className="px-4 py-2 rounded-md bg-orange-500 text-white font-semibold hover:bg-orange-600"
+              >
+                Add asset
+              </button>
+            </div>
 
-        <button
-          type="button"
-          onClick={() => { setName(""); setEmail(""); setMessage(""); setErrors({}); }}
-          className="px-4 py-2 rounded-md border hover:bg-gray-50"
-        >
-          Reset
-        </button>
+            <div className="mt-4 space-y-4">
+              {assets.map((a, i) => (
+                <div
+                  key={i}
+                  className="rounded-lg border border-gray-700 bg-gray-800/60 p-4 grid grid-cols-1 sm:grid-cols-6 gap-3"
+                >
+                  <input
+                    className={`${inputCls} sm:col-span-1`}
+                    placeholder="Asset #"
+                    value={a.assetNumber}
+                    onChange={(e) =>
+                      updateAsset(i, "assetNumber", e.target.value)
+                    }
+                  />
+                  <input
+                    className={`${inputCls} sm:col-span-1`}
+                    placeholder="Make"
+                    value={a.make}
+                    onChange={(e) => updateAsset(i, "make", e.target.value)}
+                  />
+                  <input
+                    className={`${inputCls} sm:col-span-1`}
+                    placeholder="Model"
+                    value={a.model}
+                    onChange={(e) => updateAsset(i, "model", e.target.value)}
+                  />
+                  <input
+                    className={`${inputCls} sm:col-span-1`}
+                    placeholder="Current hours"
+                    value={a.hours}
+                    onChange={(e) => updateAsset(i, "hours", e.target.value)}
+                  />
+                  <select
+                    className={`${inputCls} sm:col-span-1`}
+                    value={a.telemetry}
+                    onChange={(e) =>
+                      updateAsset(i, "telemetry", e.target.value)
+                    }
+                  >
+                    <option className="bg-gray-900" value="no">
+                      Telemetry: No
+                    </option>
+                    <option className="bg-gray-900" value="yes">
+                      Telemetry: Yes
+                    </option>
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => removeAsset(i)}
+                    className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white sm:col-span-1"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
 
-        {statusMsg && (
-          <div role="status" className="ml-2 text-sm text-green-600">
-            {statusMsg}
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-6 py-3 rounded-md bg-orange-500 text-white font-semibold hover:bg-orange-600 disabled:opacity-60"
+            >
+              {loading ? "Submitting..." : "Submit"}
+            </button>
           </div>
-        )}
+        </form>
       </div>
-    </form>
+    </div>
   );
 }
