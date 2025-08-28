@@ -1,42 +1,19 @@
 "use client";
+
 import { useState } from "react";
+import { Dialog } from '@headlessui/react';
+import { CheckCircle, X } from 'lucide-react';
 
-/* global grecaptcha */
-declare const grecaptcha: {
-  execute(siteKey: string, opts: { action: string }): Promise<string>;
-};
-
-type Asset = {
-  assetNumber: string;
-  make: string;
-  model: string;
-  hours: string;
-  telemetry: "yes" | "no";
-};
-
-export default function OffersPage() {
-  const [contact, setContact] = useState({ name: "", email: "", phone: "" });
-  const [business, setBusiness] = useState({ name: "", abn: "" });
-  const [assets, setAssets] = useState<Asset[]>(
-    [{ assetNumber: "", make: "", model: "", hours: "", telemetry: "no" }]
-  );
+export default function ContactForm() {
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", message: "" });
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const addAsset = () =>
-    setAssets((a) => [
-      ...a,
-      { assetNumber: "", make: "", model: "", hours: "", telemetry: "no" },
-    ]);
-  const removeAsset = (i: number) =>
-    setAssets((a) => a.filter((_, idx) => idx !== i));
-  const updateAsset = (i: number, field: keyof Asset, value: string) =>
-    setAssets((a) =>
-      a.map((row, idx) => (idx === i ? { ...row, [field]: value } : row))
-    );
-
-  const inputCls =
-    "w-full rounded-md border border-gray-600 bg-gray-800/70 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500";
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  
   // Safe helper for reCAPTCHA (skips if not configured)
   const getRecaptchaToken = async () => {
     const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
@@ -54,172 +31,148 @@ export default function OffersPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     try {
       const token = await getRecaptchaToken();
+      if (!token) {
+        setError("ReCAPTCHA verification failed. Please try again.");
+        setLoading(false);
+        return;
+      }
 
+      // Replace this with your actual API endpoint
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contact, business, assets, token }),
+        body: JSON.stringify({ ...formData, token }),
       });
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        alert(data.error || "Submission failed.");
+        setError(data.error || "Submission failed.");
+        setLoading(false);
         return;
       }
 
-      alert("Thanks! We’ll contact you shortly.");
-      setContact({ name: "", email: "", phone: "" });
-      setBusiness({ name: "", abn: "" });
-      setAssets([{ assetNumber: "", make: "", model: "", hours: "", telemetry: "no" }]);
+      setShowSuccessModal(true);
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      
     } catch (err: any) {
-      alert(err?.message || "Something went wrong.");
+      setError(err?.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }
   };
 
+  const closeModal = () => {
+    setShowSuccessModal(false);
+    setError(null);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <h1 className="text-3xl font-bold text-white">Special Offer</h1>
-        <p className="mt-2 text-gray-300">
-          Enter your details and assets to claim the offer.
-        </p>
+    <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+      <h2 className="text-3xl font-extrabold text-gray-900 mb-2">
+        Get in Touch
+      </h2>
+      <p className="text-lg text-gray-600 mb-8">
+        We'd love to hear from you. Please fill out the form below.
+      </p>
+      <form onSubmit={onSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <input
+            className="input"
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="input"
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <input
+          className="input"
+          type="tel"
+          name="phone"
+          placeholder="Phone Number (optional)"
+          value={formData.phone}
+          onChange={handleChange}
+        />
+        <textarea
+          className="input h-32"
+          name="message"
+          placeholder="Your message"
+          value={formData.message}
+          onChange={handleChange}
+          required
+        />
 
-        <form onSubmit={onSubmit} className="mt-8 space-y-8">
-          {/* Contact */}
-          <section>
-            <h2 className="text-xl font-semibold text-white">Contact</h2>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <input
-                className={inputCls}
-                placeholder="Full name"
-                value={contact.name}
-                onChange={(e) =>
-                  setContact({ ...contact, name: e.target.value })
-                }
-              />
-              <input
-                className={inputCls}
-                placeholder="Email"
-                type="email"
-                value={contact.email}
-                onChange={(e) =>
-                  setContact({ ...contact, email: e.target.value })
-                }
-              />
-              <input
-                className={inputCls}
-                placeholder="Phone"
-                value={contact.phone}
-                onChange={(e) =>
-                  setContact({ ...contact, phone: e.target.value })
-                }
-              />
-            </div>
-          </section>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
 
-          {/* Business */}
-          <section>
-            <h2 className="text-xl font-semibold text-white">Business</h2>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <input
-                className={inputCls}
-                placeholder="Business name"
-                value={business.name}
-                onChange={(e) =>
-                  setBusiness({ ...business, name: e.target.value })
-                }
-              />
-              <input
-                className={inputCls}
-                placeholder="ABN (optional)"
-                value={business.abn}
-                onChange={(e) =>
-                  setBusiness({ ...business, abn: e.target.value })
-                }
-              />
-            </div>
-          </section>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full px-6 py-3 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60"
+        >
+          {loading ? "Sending..." : "Send Message"}
+        </button>
+      </form>
 
-          {/* Assets */}
-          <section>
-            <h2 className="text-xl font-semibold text-white">Assets</h2>
-
-            <div className="mt-4 space-y-4">
-              {assets.map((a, i) => (
-                <div
-                  key={i}
-                  className="rounded-lg border border-gray-700 bg-gray-800/60 p-4 grid grid-cols-1 sm:grid-cols-6 gap-3"
-                >
-                  <input
-                    className={`${inputCls} sm:col-span-1`}
-                    placeholder="Asset #"
-                    value={a.assetNumber}
-                    onChange={(e) => updateAsset(i, "assetNumber", e.target.value)}
-                  />
-                  <input
-                    className={`${inputCls} sm:col-span-1`}
-                    placeholder="Make"
-                    value={a.make}
-                    onChange={(e) => updateAsset(i, "make", e.target.value)}
-                  />
-                  <input
-                    className={`${inputCls} sm:col-span-1`}
-                    placeholder="Model"
-                    value={a.model}
-                    onChange={(e) => updateAsset(i, "model", e.target.value)}
-                  />
-                  <input
-                    className={`${inputCls} sm:col-span-1`}
-                    placeholder="Current hours"
-                    value={a.hours}
-                    onChange={(e) => updateAsset(i, "hours", e.target.value)}
-                  />
-                  <select
-                    className={`${inputCls} sm:col-span-1`}
-                    value={a.telemetry}
-                    onChange={(e) => updateAsset(i, "telemetry", e.target.value)}
-                  >
-                    <option className="bg-gray-900" value="no">Telemetry: No</option>
-                    <option className="bg-gray-900" value="yes">Telemetry: Yes</option>
-                  </select>
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <Dialog as="div" className="relative z-10" open={showSuccessModal} onClose={closeModal}>
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                <div>
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+                    <CheckCircle className="h-6 w-6 text-blue-600" aria-hidden="true" />
+                  </div>
+                  <div className="mt-3 text-center sm:mt-5">
+                    <Dialog.Title as="h3" className="text-xl font-semibold leading-6 text-gray-900">
+                      Message Sent!
+                    </Dialog.Title>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Thanks for reaching out. We'll get back to you shortly.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-5 sm:mt-6">
                   <button
                     type="button"
-                    onClick={() => removeAsset(i)}
-                    className="px-3 py-2 rounded-md bg-gray-700 hover:bg-gray-600 text-white sm:col-span-1"
+                    className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+                    onClick={closeModal}
                   >
-                    Remove
+                    Close
                   </button>
                 </div>
-              ))}
+              </Dialog.Panel>
             </div>
-
-            {/* Add button moved below the list */}
-            <div className="mt-4">
-              <button
-                type="button"
-                onClick={addAsset}
-                className="px-4 py-2 rounded-md bg-orange-500 text-white font-semibold hover:bg-orange-600"
-              >
-                Add asset
-              </button>
-            </div>
-          </section>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-3 rounded-md bg-orange-500 text-white font-semibold hover:bg-orange-600 disabled:opacity-60"
-            >
-              {loading ? "Submitting..." : "Submit"}
-            </button>
           </div>
-        </form>
-      </div>
+        </Dialog>
+      )}
+
+      {/* Global styles for inputs */}
+      <style jsx global>{`
+        .input {
+          @apply w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+        }
+      `}</style>
     </div>
   );
 }

@@ -5,7 +5,6 @@ import React from 'react';
 type SolutionBlock = {
   heading: string;
   text: string;
-  image?: string;
 };
 
 // Defines the shape of an industry object.
@@ -93,7 +92,7 @@ export const INDUSTRIES: Industry[] = [
     label: "Defence & Security",
     description: "We offer secure and reliable asset management for defence and security equipment, ensuring peak performance and mission readiness through advanced predictive maintenance.",
     link: "/industries/defence-security",
-      icon: <ShieldCheck className="h-10 w-10 text-black" />,
+    icon: <ShieldCheck className="h-10 w-10 text-black" />,
     solutions: [
       {
         heading: "Mission Readiness with Advanced Analytics",

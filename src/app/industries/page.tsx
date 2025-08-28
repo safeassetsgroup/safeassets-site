@@ -1,25 +1,62 @@
 "use client";
 
-import { INDUSTRIES } from "@/data/industries";
+import { ChevronRight, Factory, Tractor, Wrench, Truck, ShieldCheck } from 'lucide-react';
+import React from 'react';
+import { INDUSTRIES } from '@/data/industries';
+import Link from 'next/link';
 
-export const metadata = {
-  title: "Industries | SafeAssets",
-  description: "Industries we serve",
-};
-
+// The main React component for the Industries page.
 export default function IndustriesPage() {
   return (
-    <section className="bg-white text-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
-        <h1 className="text-3xl font-bold">Industries</h1>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-16 px-4 sm:px-6 lg:px-8">
+      {/* Hero Section */}
+      <div className="max-w-4xl text-center mb-16">
+        <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+          Expert Asset Management Across Key Industries
+        </h1>
+        <p className="text-lg text-gray-600">
+          At Safe Assets Group, we deliver expert asset management solutions for
+          heavy equipment across a range of heavy industries. Our mission is to help you get the most out of
+          your assets—safely, efficiently, and cost-effectively.
+        </p>
+      </div>
 
-        {INDUSTRIES.map((i) => (
-          <div key={i.slug} id={i.slug} className="scroll-mt-24">
-            <h2 className="text-2xl font-semibold">{i.label}</h2>
-            {/* ...existing content for {i.label}... */}
-          </div>
+      {/* Grid of Industry Cards */}
+      <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {INDUSTRIES.map((industry, index) => (
+          <Link
+            key={index}
+            href={industry.link}
+            className="flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-transform duration-300 ease-in-out border-t-4 border-b-4 border-transparent hover:border-blue-500"
+          >
+            <div className="mb-4">
+              {industry.icon}
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {industry.label}
+            </h2>
+            <p className="text-gray-600 mb-6 flex-grow">
+              {industry.description}
+            </p>
+            <div
+              className="mt-auto inline-flex items-center text-blue-600 font-semibold transition-colors duration-200 group-hover:text-blue-800"
+            >
+              Learn More
+              <ChevronRight className="ml-1 w-4 h-4" />
+            </div>
+          </Link>
         ))}
       </div>
-    </section>
+
+      {/* Additional Text Section */}
+      <div className="max-w-4xl text-center mt-16 p-8 bg-white rounded-2xl shadow-lg">
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          Technology and Strategy That Drive Results
+        </h2>
+        <p className="text-gray-600">
+          We specialize in **predictive maintenance**, leveraging the latest technologies in **telematics**, **IoT sensors**, **real-time data analytics**, and **equipment connectivity** to anticipate failures before they happen. This proactive approach reduces unplanned downtime, extends equipment life, and lowers total cost of ownership. Our services span the entire asset lifecycle—from equipment procurement and performance optimization to maintenance planning, inventory control, and strategic replacement budgeting. We align our practices with industry standards and regulatory compliance to ensure your operation runs reliably and sustainably.
+        </p>
+      </div>
+    </div>
   );
 }

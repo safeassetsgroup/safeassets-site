@@ -13,7 +13,7 @@ export default function Hero() {
         <Image src="/brand/logo.png" alt="Logo" width={220} height={66} priority />
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 mt-6">
           Advanced Asset Management for{" "}
-          <span className="text-orange-400">Industries</span>
+          <span className="text-blue-600">Industries</span>
         </h1>
         <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-xl">
           Private, connected and verifiable CMMS/ERP — designed for construction, agriculture,
@@ -23,11 +23,14 @@ export default function Hero() {
         <div className="mt-8 flex flex-wrap gap-4">
           <Link
             href="/contact"
-            className="inline-flex items-center px-6 py-3 rounded-md bg-orange-500 text-white font-semibold hover:bg-orange-600"
+            className="inline-flex items-center px-6 py-3 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
           >
             Talk to us
           </Link>
-          <Link href="/industries" className="inline-flex items-center px-6 py-3 rounded-md bg-white/15 text-white font-semibold backdrop-blur hover:bg-white/25">
+          <Link
+            href="/industries"
+            className="inline-flex items-center px-6 py-3 rounded-md border border-blue-600 text-blue-600 font-semibold bg-white transition-colors hover:bg-blue-50"
+          >
             Browse industries
           </Link>
         </div>
