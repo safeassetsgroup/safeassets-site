@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import MediaBackground from "./MediaBackground";
 import IndustriesScroll from "./IndustriesScroll";
-import SpecialOfferPromo from "./SpecialOfferPromo";
 
 export default function Hero() {
   return (
@@ -39,9 +38,6 @@ export default function Hero() {
       <div className="absolute bottom-0 left-0 w-full">
         <IndustriesScroll />
       </div>
-
-      {/* Special offer badge on the right over the hero */}
-      <SpecialOfferPromo />
     </MediaBackground>
   );
 }
