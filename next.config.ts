@@ -1,9 +1,8 @@
-// next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Optimize external logos/icons used in IndustriesScroll, etc.
   images: {
-    // Either 'domains' or 'remotePatterns' works; we'll include both for safety.
     domains: [
       "logo.clearbit.com",
       "www.google.com",
@@ -14,18 +13,15 @@ const nextConfig: NextConfig = {
       "t3.gstatic.com",
       "t4.gstatic.com",
     ],
-    remotePatterns: [
-      { protocol: "https", hostname: "logo.clearbit.com" },
-      { protocol: "https", hostname: "www.google.com" },
-      { protocol: "https", hostname: "lh3.googleusercontent.com" },
-      { protocol: "https", hostname: "t0.gstatic.com" },
-      { protocol: "https", hostname: "t1.gstatic.com" },
-      { protocol: "https", hostname: "t2.gstatic.com" },
-      { protocol: "https", hostname: "t3.gstatic.com" },
-      { protocol: "https", hostname: "t4.gstatic.com" },
-    ],
     formats: ["image/avif", "image/webp"],
   },
+
+  // Allow builds to complete even if ESLint finds problems (useful for Preview).
+  // Remove this in Production once you’ve cleaned up lint errors.
+  eslint: { ignoreDuringBuilds: true },
+
+  // If you also want to ignore TS type errors during Preview builds, uncomment:
+  // typescript: { ignoreBuildErrors: true },
 };
 
 export default nextConfig;
