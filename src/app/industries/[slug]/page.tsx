@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { INDUSTRIES } from "@/data/industries.tsx";
+import { INDUSTRIES } from "@/data/industries.tsx"; // keep your original import path
 import Link from "next/link";
 import ExternalLogo from "@/components/ExternalLogo";
 
@@ -146,4 +146,12 @@ export default function IndustryPage({ params }: Props) {
       </div>
     </div>
   );
+}
+
+/**
+ * Optional SSG helper. It doesn’t change the page’s UI/logic,
+ * but satisfies Next’s typing and prebuilds routes like /industries/construction, etc.
+ */
+export function generateStaticParams() {
+  return INDUSTRIES.map((i: any) => ({ slug: i.slug }));
 }
