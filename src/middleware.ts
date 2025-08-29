@@ -43,6 +43,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // run middleware for all paths (we early-return for allowed paths above)
-  matcher: ["/:path*"],
+  // Run on everything except Next internals, static files, and ALL api routes
+  matcher: ["/((?!_next/|.*\\..*|api/).*)"],
 };
