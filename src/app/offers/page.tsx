@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 /* ---------------------------------------------
-   Industry options (your categories)
+    Industry options (your categories)
 --------------------------------------------- */
 const INDUSTRY_OPTIONS = [
   { value: "", label: "Select industry" },
@@ -30,7 +30,7 @@ const INDUSTRY_OPTIONS = [
 ];
 
 /* ---------------------------------------------
-   Types
+    Types
 --------------------------------------------- */
 export type Asset = {
   unitNumber: string;
@@ -56,7 +56,7 @@ type FormState = {
 };
 
 /* ---------------------------------------------
-   Page
+    Page
 --------------------------------------------- */
 export default function OffersPage() {
   const [formData, setFormData] = useState<FormState>({
@@ -171,7 +171,7 @@ export default function OffersPage() {
     setErrorMsg(null);
 
     try {
-      // TODO: Replace with your real API (e.g., /api/offers) that emails site@safeassets.group
+      // TODO: Replace with your real API (e.g., /api/offers) that emails web@safeassets.group
       await new Promise((r) => setTimeout(r, 1200));
       setShowSuccessModal(true);
 
@@ -493,7 +493,7 @@ export default function OffersPage() {
 }
 
 /* ---------------------------------------------
-   Small UI primitives
+    Small UI primitives
 --------------------------------------------- */
 function LabeledInput(props: {
   label: string;
@@ -633,11 +633,6 @@ function LabeledSelect(props: {
           </option>
         ))}
       </select>
-      {error && name && (
-        <p id={`${name}-error`} className="mt-1 text-xs text-red-600">
-          {error}
-        </p>
-      )}
     </div>
   );
 }

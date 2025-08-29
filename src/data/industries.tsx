@@ -1,30 +1,35 @@
-import { Factory, Tractor, Wrench, Truck, ShieldCheck } from 'lucide-react';
-import React from 'react';
+import React from "react";
+import { Factory, Tractor, Wrench, Truck, ShieldCheck } from "lucide-react";
 
-// Defines the shape of a single solution block.
+// Each solution card on the page
 type SolutionBlock = {
   heading: string;
   text: string;
 };
 
-// Defines the shape of an industry object.
+// Industry object shape
 export type Industry = {
   slug: string;
   label: string;
   description: string;
-  link: string;
-  icon: React.ReactNode;
+  link: string;                 // internal route
+  icon: React.ReactNode;        // lucide icon
+  website?: string;             // NEW: external site used to fetch a logo (e.g. "caterpillar.com" or "https://caterpillar.com")
   solutions: SolutionBlock[];
 };
 
-// The data for each industry.
+// Data
 export const INDUSTRIES: Industry[] = [
   {
     slug: "construction",
     label: "Construction",
-    description: "We provide asset management for excavators, bulldozers, and loaders used in construction and development. Our tools help you track equipment health and performance to stay on schedule and budget.",
+    description:
+      "We provide asset management for excavators, bulldozers, and loaders used in construction and development. Our tools help you track equipment health and performance to stay on schedule and budget.",
     link: "/industries/construction",
     icon: <Wrench className="h-10 w-10 text-gray-600" />,
+    // Set to the website you want the logo pulled from:
+    // e.g. a partner/vendor domain, or your own landing page for this sector
+    website: "", // e.g. "caterpillar.com"
     solutions: [
       {
         heading: "Predictive Maintenance for Heavy Machinery",
@@ -39,9 +44,11 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "agriculture",
     label: "Agriculture",
-    description: "From combines to irrigation systems, we help farmers manage their heavy machinery. Our solutions ensure equipment readiness during critical seasons, improving efficiency and yield.",
+    description:
+      "From combines to irrigation systems, we help farmers manage their heavy machinery. Our solutions ensure equipment readiness during critical seasons, improving efficiency and yield.",
     link: "/industries/agriculture",
     icon: <Tractor className="h-10 w-10 text-green-600" />,
+    website: "", // e.g. "deere.com"
     solutions: [
       {
         heading: "Ensuring Readiness for Critical Seasons",
@@ -56,9 +63,11 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "transport-logistics",
     label: "Transport & Logistics",
-    description: "For fleets of semi-trucks and heavy transport vehicles, we offer solutions to reduce maintenance costs and improve fleet reliability. We ensure your assets are always on the road and on time.",
+    description:
+      "For fleets of semi-trucks and heavy transport vehicles, we offer solutions to reduce maintenance costs and improve fleet reliability. We ensure your assets are always on the road and on time.",
     link: "/industries/transport-logistics",
     icon: <Truck className="h-10 w-10 text-red-600" />,
+    website: "", // e.g. "dhl.com"
     solutions: [
       {
         heading: "Optimized Maintenance for Fleet Reliability",
@@ -73,9 +82,11 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "energy-utilities",
     label: "Energy & Utilities",
-    description: "Our solutions for the energy and utilities sector focus on maintaining critical infrastructure and heavy machinery to ensure uninterrupted service and operational safety.",
+    description:
+      "Our solutions for the energy and utilities sector focus on maintaining critical infrastructure and heavy machinery to ensure uninterrupted service and operational safety.",
     link: "/industries/energy-utilities",
     icon: <Factory className="h-10 w-10 text-orange-600" />,
+    website: "", // e.g. "siemens-energy.com"
     solutions: [
       {
         heading: "Ensuring Uninterrupted Service",
@@ -90,9 +101,11 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "defence-security",
     label: "Defence & Security",
-    description: "We offer secure and reliable asset management for defence and security equipment, ensuring peak performance and mission readiness through advanced predictive maintenance.",
+    description:
+      "We offer secure and reliable asset management for defence and security equipment, ensuring peak performance and mission readiness through advanced predictive maintenance.",
     link: "/industries/defence-security",
     icon: <ShieldCheck className="h-10 w-10 text-black" />,
+    website: "", // e.g. "lockheedmartin.com"
     solutions: [
       {
         heading: "Mission Readiness with Advanced Analytics",
@@ -107,9 +120,11 @@ export const INDUSTRIES: Industry[] = [
   {
     slug: "strata-property",
     label: "Strata & Property",
-    description: "Our services assist strata and property managers in optimizing the maintenance of shared heavy equipment and infrastructure, reducing costs and extending asset life.",
+    description:
+      "Our services assist strata and property managers in optimizing the maintenance of shared heavy equipment and infrastructure, reducing costs and extending asset life.",
     link: "/industries/strata-property",
     icon: <Factory className="h-10 w-10 text-purple-600" />,
+    website: "", // e.g. "strata.community"
     solutions: [
       {
         heading: "Streamlined Maintenance for Shared Assets",

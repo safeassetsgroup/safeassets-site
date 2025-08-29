@@ -16,7 +16,7 @@ export default function SpecialOfferPromo({
   href = "/offers",
   daysLeft = 7,
   className = "",
-  variant = "plain",           // <- default: no fold
+  variant = "plain",       // <- default: no fold
   revealBgClass = "bg-white",  // only used when variant="fold"
 }: Props) {
   const BaseCard = (
@@ -40,7 +40,7 @@ export default function SpecialOfferPromo({
       </div>
 
       <h3 className="mt-1 text-3xl sm:text-4xl font-black leading-tight">
-        Special Offer
+        Launch bundle
       </h3>
 
       <p className="mt-2 text-sm sm:text-base text-white/95">
@@ -64,7 +64,7 @@ export default function SpecialOfferPromo({
 
   return (
     <Link
-      href={href}
+      href="/offers"
       aria-label="View special offer"
       className={["group block", className].filter(Boolean).join(" ")}
     >
