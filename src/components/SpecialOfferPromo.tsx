@@ -40,11 +40,11 @@ export default function SpecialOfferPromo({
       </div>
 
       <h3 className="mt-1 text-3xl sm:text-4xl font-black leading-tight">
-        Launch bundle
+        Launch Only Offer
       </h3>
 
       <p className="mt-2 text-sm sm:text-base text-white/95">
-        Save on onboarding & setup costs.
+        Free on onboarding & setup costs.
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
