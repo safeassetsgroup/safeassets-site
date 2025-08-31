@@ -150,7 +150,7 @@ export default function ContactPage() {
                   <div>
                     <div className="font-medium text-gray-900">Email</div>
                     <a className="text-blue-700 hover:underline" href="mailto:admin@safeassets.group">
-                      info@example.com
+                      admin@safeassets.group
                     </a>
                   </div>
                 </li>

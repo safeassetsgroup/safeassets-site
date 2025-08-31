@@ -1,4 +1,7 @@
 // src/components/Footer.tsx
+"use client";
+
+import Link from "next/link";
 import { INDUSTRIES } from "@/data/industries";
 
 export default function Footer() {
@@ -7,6 +10,7 @@ export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-300 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Top grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Brand + intro + contact */}
           <div>
@@ -51,9 +55,9 @@ export default function Footer() {
             <ul className="mt-4 space-y-3">
               {INDUSTRIES.map((i) => (
                 <li key={i.slug}>
-                  <a className="hover:text-white" href={`/industries#${i.slug}`}>
+                  <Link className="hover:text-white" href={`/industries#${i.slug}`}>
                     {i.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -63,12 +67,20 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold text-xl">Company</h4>
             <ul className="mt-4 space-y-3">
-              <li><a className="hover:text-white" href="/about">About Us</a></li>
-              <li><a className="hover:text-white" href="/contact">Contact</a></li>
               <li>
-                <a className="hover:text-white inline-flex items-center gap-1" href="https://github.com/" target="_blank" rel="noreferrer">
-                  GitHub <span className="text-slate-400" aria-hidden>↗</span>
-                </a>
+                <Link href="/about" className="hover:text-white">
+                  About us
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-white">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link href="/careers" className="hover:text-white">
+                  Careers
+                </Link>
               </li>
             </ul>
           </div>
@@ -78,8 +90,8 @@ export default function Footer() {
         <div className="mt-10 pt-6 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between text-sm text-slate-400">
           <p>© {year} SafeAssets Group. All rights reserved.</p>
           <div className="flex items-center gap-6 mt-3 md:mt-0">
-            <a href="/privacy" className="hover:text-white">Privacy Policy</a>
-            <a href="/terms" className="hover:text-white">Terms of Service</a>
+            <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white">Terms of Service</Link>
           </div>
         </div>
       </div>
