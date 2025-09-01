@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Dialog } from "@headlessui/react";
 import {
@@ -16,9 +16,9 @@ import {
   Package,
 } from "lucide-react";
 
-// ---------------------------------------------
-// Industry options (your categories)
-// ---------------------------------------------
+/* -----------------------------
+   Industry options (unchanged)
+------------------------------ */
 const INDUSTRY_OPTIONS = [
   { value: "", label: "Select industry" },
   { value: "construction", label: "Construction" },
@@ -30,9 +30,9 @@ const INDUSTRY_OPTIONS = [
   { value: "other", label: "Other" },
 ];
 
-// ---------------------------------------------
-// Types
-// ---------------------------------------------
+/* -----------------------------
+   Types (unchanged)
+------------------------------ */
 export type Asset = {
   unitNumber: string;
   make: string;
@@ -56,16 +56,39 @@ type FormState = {
   industryOther: string;
 };
 
-// ---------------------------------------------
-// Page
-// ---------------------------------------------
+/* ============================================================================
+   PAGE
+   The page component is now a simple Suspense wrapper to satisfy Next 15.
+   All your original logic lives in <OffersContent/>.
+============================================================================ */
 export default function OffersPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full max-w-5xl">
+            <div className="h-24 animate-pulse rounded-2xl bg-gray-200" />
+          </div>
+        </div>
+      }
+    >
+      <OffersContent />
+    </Suspense>
+  );
+}
+
+/* ============================================================================
+   CONTENT (your original component logic)
+============================================================================ */
+function OffersContent() {
+  // ✅ Safe now because it's inside <Suspense>
   const searchParams = useSearchParams();
   const planRaw = (searchParams.get("plan") || "").toLowerCase();
 
   const selectedPlan: "essential" | "professional" | null =
     planRaw === "essential" ? "essential" : planRaw === "professional" ? "professional" : null;
 
+  // Banner styling derived from plan
   const banner = useMemo(() => {
     if (selectedPlan === "essential") {
       return {
@@ -243,7 +266,6 @@ export default function OffersPage() {
               <p className="mt-1 text-white/90">
                 Fill in your details and the assets you want covered. We will get back to you quickly.
               </p>
-
               {banner.label && (
                 <p className="mt-3 inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-sm font-medium">
                   {banner.label}
@@ -531,9 +553,9 @@ export default function OffersPage() {
   );
 }
 
-// ---------------------------------------------
-// Small UI primitives
-// ---------------------------------------------
+/* -----------------------------
+   Small UI primitives (unchanged)
+------------------------------ */
 function LabeledInput(props: {
   label: string;
   name?: string;
