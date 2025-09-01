@@ -1,48 +1,47 @@
+// src/middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Allow Next internals, static assets and any explicitly public API routes
+  // 1) Only enforce in Production
+  const env = process.env.VERCEL_ENV || process.env.NODE_ENV;
+  if (env !== "production") return NextResponse.next();
+
+  // 2) Allow internals & public assets
   if (
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/static") ||
-    pathname.startsWith("/public") ||
-    pathname === "/favicon.ico" ||
-    pathname.startsWith("/api/public")
+    pathname.startsWith("/favicon") ||
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml" ||
+    /\.[a-z0-9]+$/i.test(pathname) // any file extension
   ) {
     return NextResponse.next();
   }
 
-  // If no BASIC_AUTH configured, allow access (useful for local dev if not set)
-  const basicCreds = process.env.BASIC_AUTH; // expected "username:password"
-  if (!basicCreds) return NextResponse.next();
+  // 3) Optional: allow all API routes without auth
+  if (pathname.startsWith("/api/")) return NextResponse.next();
 
-  const auth = req.headers.get("authorization");
-  if (auth && auth.startsWith("Basic ")) {
-    const b64 = auth.split(" ")[1];
-    let decoded = "";
-    try {
-      // Edge runtime supports atob; fallback to Buffer if available
-      decoded =
-        typeof atob === "function"
-          ? atob(b64)
-          : Buffer.from(b64, "base64").toString("utf8");
-    } catch {
-      decoded = "";
-    }
-    if (decoded === basicCreds) return NextResponse.next();
+  // 4) Basic auth: set BASIC_AUTH="username:password"
+  const BASIC = process.env.BASIC_AUTH;
+  if (!BASIC) return NextResponse.next(); // if not configured, do nothing
+
+  const header = req.headers.get("authorization") || "";
+  if (header.startsWith("Basic ")) {
+    const b64 = header.slice(6);
+    const decoded =
+      typeof atob === "function" ? atob(b64) : Buffer.from(b64, "base64").toString("utf8");
+    if (decoded === BASIC) return NextResponse.next();
   }
 
-  // Trigger browser login dialog
   return new NextResponse("Authentication required", {
     status: 401,
     headers: { "WWW-Authenticate": 'Basic realm="SafeAssets Preview"' },
   });
 }
 
+// Apply to everything except the listed assets/files above
 export const config = {
-  // Run on everything except Next internals, static files, and ALL api routes
-  matcher: ["/((?!_next/|.*\\..*|api/).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)"],
 };
