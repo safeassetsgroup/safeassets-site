@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Dialog } from "@headlessui/react";
 import {
   CheckCircle,
@@ -15,9 +16,9 @@ import {
   Package,
 } from "lucide-react";
 
-/* ---------------------------------------------
-    Industry options (your categories)
---------------------------------------------- */
+// ---------------------------------------------
+// Industry options (your categories)
+// ---------------------------------------------
 const INDUSTRY_OPTIONS = [
   { value: "", label: "Select industry" },
   { value: "construction", label: "Construction" },
@@ -26,12 +27,12 @@ const INDUSTRY_OPTIONS = [
   { value: "energy-utilities", label: "Energy & Utilities" },
   { value: "defence-security", label: "Defence & Security" },
   { value: "strata-property", label: "Strata & Property" },
-  { value: "other", label: "Other" }, // remove if you don't want a free-text fallback
+  { value: "other", label: "Other" },
 ];
 
-/* ---------------------------------------------
-    Types
---------------------------------------------- */
+// ---------------------------------------------
+// Types
+// ---------------------------------------------
 export type Asset = {
   unitNumber: string;
   make: string;
@@ -55,10 +56,38 @@ type FormState = {
   industryOther: string;
 };
 
-/* ---------------------------------------------
-    Page
---------------------------------------------- */
+// ---------------------------------------------
+// Page
+// ---------------------------------------------
 export default function OffersPage() {
+  const searchParams = useSearchParams();
+  const planRaw = (searchParams.get("plan") || "").toLowerCase();
+
+  const selectedPlan: "essential" | "professional" | null =
+    planRaw === "essential" ? "essential" : planRaw === "professional" ? "professional" : null;
+
+  const banner = useMemo(() => {
+    if (selectedPlan === "essential") {
+      return {
+        gradient: "from-emerald-600 to-emerald-500",
+        ring: "ring-emerald-500/30",
+        label: "Selected plan: Essential — AU$33/week",
+      };
+    }
+    if (selectedPlan === "professional") {
+      return {
+        gradient: "from-blue-900 to-blue-800",
+        ring: "ring-blue-700/30",
+        label: "Selected plan: Professional — AU$55/week",
+      };
+    }
+    return {
+      gradient: "from-blue-700 to-blue-600",
+      ring: "ring-blue-500/30",
+      label: null as string | null,
+    };
+  }, [selectedPlan]);
+
   const [formData, setFormData] = useState<FormState>({
     name: "",
     surname: "",
@@ -79,7 +108,7 @@ export default function OffersPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  /* ---------- Validation ---------- */
+  // ---------- Validation ----------
   const errors = useMemo(() => {
     const e: Record<string, string> = {};
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contactEmail || "");
@@ -97,7 +126,6 @@ export default function OffersPage() {
       e.industryOther = "Please specify your industry.";
     }
 
-    // At least one asset with minimum info
     if (!formData.assets.length) {
       e.assets = "Add at least one asset.";
     } else {
@@ -113,7 +141,7 @@ export default function OffersPage() {
 
   const hasErrors = Object.keys(errors).length > 0;
 
-  /* ---------- Handlers ---------- */
+  // ---------- Handlers ----------
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -200,25 +228,36 @@ export default function OffersPage() {
 
   const closeModal = () => setShowSuccessModal(false);
 
-  /* ---------- UI ---------- */
+  // ---------- UI ----------
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-5xl space-y-8">
-        {/* Header Card */}
-        <div className="rounded-2xl bg-gradient-to-br from-blue-700 to-blue-600 p-6 text-white shadow-lg ring-1 ring-blue-500/30">
+        {/* Header Card (color changes by selected plan) */}
+        <div
+          className={`rounded-2xl bg-gradient-to-br ${banner.gradient} p-6 text-white shadow-lg ring-1 ${banner.ring}`}
+        >
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm uppercase tracking-widest text-blue-100">Special Offer</p>
+              <p className="text-sm uppercase tracking-widest text-white/80">Special Offer</p>
               <h1 className="mt-1 text-3xl font-extrabold">Claim your onboarding bundle</h1>
-              <p className="mt-1 text-blue-100">
+              <p className="mt-1 text-white/90">
                 Fill in your details and the assets you want covered. We will get back to you quickly.
               </p>
+
+              {banner.label && (
+                <p className="mt-3 inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-sm font-medium">
+                  {banner.label}
+                </p>
+              )}
             </div>
           </div>
         </div>
 
         {/* Form */}
         <form onSubmit={onSubmit} className="rounded-2xl border border-gray-200 bg-white p-6 shadow">
+          {/* Hidden field so backend knows which pricing the user chose */}
+          <input type="hidden" name="selectedPlan" value={selectedPlan ?? ""} />
+
           {/* Error banner */}
           {errorMsg && (
             <div className="mb-6 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-red-800">
@@ -492,9 +531,9 @@ export default function OffersPage() {
   );
 }
 
-/* ---------------------------------------------
-    Small UI primitives
---------------------------------------------- */
+// ---------------------------------------------
+// Small UI primitives
+// ---------------------------------------------
 function LabeledInput(props: {
   label: string;
   name?: string;
