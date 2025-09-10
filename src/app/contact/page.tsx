@@ -215,7 +215,7 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={cnInput(touched.name && errors.name)}
+                    className={cnInput(!!(touched.name && errors.name))}
                     placeholder="John Doe"
                     disabled={loading}
                     required
@@ -239,7 +239,7 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={cnInput(touched.email && errors.email)}
+                    className={cnInput(!!(touched.email && errors.email))}
                     placeholder="you@example.com"
                     disabled={loading}
                     required
@@ -263,7 +263,7 @@ export default function ContactPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={cnInput(touched.phone && errors.phone)}
+                    className={cnInput(!!(touched.phone && errors.phone))}
                     placeholder="0419 283 977"
                     disabled={loading}
                     required
@@ -286,7 +286,7 @@ export default function ContactPage() {
                     value={formData.topic}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={cnInput(touched.topic && errors.topic)}
+                    className={cnInput(!!(touched.topic && errors.topic))}
                     disabled={loading}
                     required
                   >
@@ -313,7 +313,7 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={cnInput(touched.message && errors.message)}
+                    className={cnInput(!!(touched.message && errors.message))}
                     placeholder="Tell us more about your project..."
                     disabled={loading}
                     rows={4}
