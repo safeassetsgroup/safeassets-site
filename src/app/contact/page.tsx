@@ -112,27 +112,25 @@ export default function ContactPage() {
   const messageMax = 1200;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* HEADER / HERO */}
-      <section className="relative isolate bg-gradient-to-b from-blue-700 to-blue-600 text-white pt-28 pb-6">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="max-w-3xl py-10">
-            <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm leading-6 ring-1 ring-inset ring-white/20">
-              <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-              We typically reply within 1 business day
-            </p>
-            <h1 className="mt-6 text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Let's talk about your project
-            </h1>
-            <p className="mt-4 text-lg text-blue-100">
-              Send us a message and our team will get back to you with the next steps.
-            </p>
+    <div className="bg-white">
+      {/* Header Section */}
+      <div className="bg-slate-800 py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center rounded-full bg-slate-700 px-3 py-1 text-sm font-medium text-slate-200 ring-1 ring-inset ring-white/20">
+            <CheckCircle className="-ml-1 mr-2 h-5 w-5 text-slate-300" aria-hidden="true" />
+            <span>We typically reply within 1 business day</span>
           </div>
+          <h1 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-6xl">
+            Let's talk about your <span className="text-orange-400">project</span>
+          </h1>
+          <p className="mt-4 text-lg leading-8 text-slate-300">
+            Send us a message and our team will get back to you with the next steps.
+          </p>
         </div>
-      </section>
+      </div>
 
-      {/* MAIN CONTENT */}
-      <main className="mx-auto mt-10 max-w-7xl px-6 pb-24 lg:px-8">
+      {/* Form and Contact Details Section */}
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 py-16 sm:py-24">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* LEFT: Contact options */}
           <aside className="lg:col-span-5">
@@ -198,7 +196,186 @@ export default function ContactPage() {
 
           {/* RIGHT: Form */}
           <section className="lg:col-span-7">
-            {/* form code same as previous version */}
+            <form onSubmit={onSubmit} className="rounded-2xl bg-white p-8 shadow ring-1 ring-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Send us a message</h2>
+              <p className="mt-1 text-sm text-gray-600">
+                We respond within 1 business day. For urgent matters, use the contact options.
+              </p>
+
+              {/* Name */}
+              <div className="mt-6">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-900">
+                  Your name
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={cnInput(touched.name && errors.name)}
+                    placeholder="John Doe"
+                    disabled={loading}
+                    required
+                  />
+                  {touched.name && errors.name && (
+                    <p className="mt-2 text-sm text-red-600">{errors.name}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="mt-4">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-900">
+                  Your email
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={cnInput(touched.email && errors.email)}
+                    placeholder="you@example.com"
+                    disabled={loading}
+                    required
+                  />
+                  {touched.email && errors.email && (
+                    <p className="mt-2 text-sm text-red-600">{errors.email}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="mt-4">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-900">
+                  Phone number
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="tel"
+                    name="phone"
+                    id="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={cnInput(touched.phone && errors.phone)}
+                    placeholder="0419 283 977"
+                    disabled={loading}
+                    required
+                  />
+                  {touched.phone && errors.phone && (
+                    <p className="mt-2 text-sm text-red-600">{errors.phone}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Topic */}
+              <div className="mt-4">
+                <label htmlFor="topic" className="block text-sm font-medium text-gray-900">
+                  Topic
+                </label>
+                <div className="mt-2">
+                  <select
+                    name="topic"
+                    id="topic"
+                    value={formData.topic}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={cnInput(touched.topic && errors.topic)}
+                    disabled={loading}
+                    required
+                  >
+                    <option value="">Select a topic</option>
+                    <option value="general">General inquiry</option>
+                    <option value="support">Support</option>
+                    <option value="sales">Sales</option>
+                  </select>
+                  {touched.topic && errors.topic && (
+                    <p className="mt-2 text-sm text-red-600">{errors.topic}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Message */}
+              <div className="mt-4">
+                <label htmlFor="message" className="block text-sm font-medium text-gray-900">
+                  Your message
+                </label>
+                <div className="mt-2">
+                  <textarea
+                    name="message"
+                    id="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={cnInput(touched.message && errors.message)}
+                    placeholder="Tell us more about your project..."
+                    disabled={loading}
+                    rows={4}
+                    required
+                  />
+                  {touched.message && errors.message && (
+                    <p className="mt-2 text-sm text-red-600">{errors.message}</p>
+                  )}
+                </div>
+                <div className="mt-2 flex justify-between text-sm text-gray-500">
+                  <span>
+                    {messageCount} / {messageMax} characters
+                  </span>
+                </div>
+              </div>
+
+              {/* Consent */}
+              <div className="mt-4 flex gap-3">
+                <div className="flex h-6 items-center">
+                  <input
+                    id="consent"
+                    name="consent"
+                    type="checkbox"
+                    checked={formData.consent}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+                    disabled={loading}
+                    required
+                  />
+                </div>
+                <div className="text-sm leading-6">
+                  I accept the{" "}
+                  <a
+                    href="#"
+                    className="font-medium text-blue-600 hover:underline"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowSuccessModal(true);
+                    }}
+                  >
+                    privacy note
+                  </a>
+                  .
+                </div>
+              </div>
+              {touched.consent && errors.consent && (
+                <p className="mt-2 text-sm text-red-600">{errors.consent}</p>
+              )}
+
+              {/* Submit Button */}
+              <div className="mt-6">
+                <button
+                  type="submit"
+                  className="flex w-full justify-center rounded-md bg-blue-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 disabled:opacity-50"
+                  disabled={loading}
+                >
+                  {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                  Send message
+                </button>
+              </div>
+            </form>
           </section>
         </div>
 
@@ -227,7 +404,7 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
-      </main>
+      </div> {/* This closing div was missing and is now added */}
 
       {/* Success Modal */}
       <Dialog as="div" className="relative z-50" open={showSuccessModal} onClose={closeModal}>
