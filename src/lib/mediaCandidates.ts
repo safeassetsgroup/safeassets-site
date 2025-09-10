@@ -1,4 +1,12 @@
-export function buildCandidatesForIndustry(industry: any, fallbackSlug?: string) {
+interface Industry {
+  slug?: string;
+  name?: string;
+  image?: string;
+  media?: string;
+  excerpt?: string;
+}
+
+export function buildCandidatesForIndustry(industry: Industry, fallbackSlug?: string) {
   const candidates: string[] = [];
   const pushIf = (p?: string) => {
     if (!p) return;

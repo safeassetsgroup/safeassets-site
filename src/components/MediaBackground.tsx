@@ -62,8 +62,8 @@ export default function MediaBackground({
         setVideoUrl(data.video ?? null);
         setImageUrl(data.image ?? null);
         setVideoErrored(false);
-      } catch (err: any) {
-        if (err.name === "AbortError") return;
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === "AbortError") return;
         if (!mounted) return;
         setVideoUrl(null);
         setImageUrl(null);
