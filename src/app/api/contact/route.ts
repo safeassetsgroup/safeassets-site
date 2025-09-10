@@ -2,27 +2,41 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! // backend only
-);
+// Allow graceful degradation if environment variables are not configured
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const resendKey = process.env.RESEND_API_KEY;
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
+const supabase = supabaseUrl && supabaseKey 
+  ? createClient(supabaseUrl, supabaseKey) 
+  : null;
+
+const resend = resendKey ? new Resend(resendKey) : null;
 
 export async function POST(req: Request) {
   try {
+    // Check if required services are configured
+    if (!supabase || !resend) {
+      return NextResponse.json(
+        { error: "Contact service is not configured. Please check environment variables." },
+        { status: 500 }
+      );
+    }
+
     const { contact, business, assets, token } = await req.json();
 
     // ✅ Verify reCAPTCHA
-    const secret = process.env.RECAPTCHA_SECRET_KEY!;
-    const verify = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ secret, response: token }),
-    }).then((r) => r.json());
+    const secret = process.env.RECAPTCHA_SECRET_KEY;
+    if (secret && token) {
+      const verify = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ secret, response: token }),
+      }).then((r) => r.json());
 
-    if (!verify.success || (verify.score ?? 0) < 0.5) {
-      return NextResponse.json({ error: "reCAPTCHA failed" }, { status: 400 });
+      if (!verify.success || (verify.score ?? 0) < 0.5) {
+        return NextResponse.json({ error: "reCAPTCHA failed" }, { status: 400 });
+      }
     }
 
     // ✅ Insert into Supabase

@@ -5,8 +5,16 @@ import Link from "next/link";
 import industries from "@/app/content/industries.json";
 import { buildCandidatesForIndustry, preloadImage } from "@/lib/mediaCandidates";
 
+interface Industry {
+  slug?: string;
+  name?: string;
+  image?: string;
+  description?: string;
+  excerpt?: string;
+}
+
 /** Derive a usable slug: prefer provided slug, else sanitize name, else use image filename, else index */
-function deriveSlug(industry: any, idx: number) {
+function deriveSlug(industry: Industry, idx: number) {
   if (industry.slug && String(industry.slug).trim()) return String(industry.slug).trim();
   if (industry.name && String(industry.name).trim()) {
     return String(industry.name)
@@ -73,7 +81,7 @@ export default function IndustryGrid() {
           className="grid gap-6"
           style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}
         >
-          {industries.map((industry: any, idx: number) => {
+          {industries.map((industry: Industry, idx: number) => {
             const key = deriveSlug(industry, idx);
             const src = selected[key] ?? "/placeholder.jpg";
             const slug = deriveSlug(industry, idx);
