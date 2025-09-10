@@ -1,26 +1,42 @@
-import fs from "fs";
-import path from "path";
 import { NextResponse } from "next/server";
+import fs from "fs/promises";
+import path from "path";
 
-export async function GET(request: Request) {
+// This recursive function will get all file paths in a directory.
+async function getFiles(dir: string): Promise<string[]> {
+  const dirents = await fs.readdir(dir, { withFileTypes: true });
+  const files = await Promise.all(
+    dirents.map((dirent) => {
+      const res = path.resolve(dir, dirent.name);
+      return dirent.isDirectory() ? getFiles(res) : res;
+    })
+  );
+  return Array.prototype.concat(...files);
+}
+
+export async function GET() {
   try {
-    const url = new URL(request.url);
-    const dirParam = url.searchParams.get("dir") || "";
-    const safeDir = dirParam.replace(/^\/+/, "").replace(/\.\.+/g, "");
-    const dir = path.join(process.cwd(), "public", safeDir);
+    const publicDir = path.join(process.cwd(), "public");
+    const allFiles = await getFiles(publicDir);
 
-    const entries = await fs.promises.readdir(dir, { withFileTypes: true });
-    const files = entries.filter(e => e.isFile()).map(e => e.name);
+    // Create relative paths and filter for images and videos
+    const relativeFiles = allFiles.map((file) => path.relative(publicDir, file).replace(/\\/g, '/'));
 
-    const mp4 = files.find(f => /\.mp4$/i.test(f)) ?? null;
-    const png = files.find(f => /\.png$/i.test(f)) ?? null;
-    const jpg = files.find(f => /\.(jpe?g)$/i.test(f)) ?? null;
+    const images = relativeFiles.filter((file) =>
+      /\.(jpg|jpeg|png|webp|gif)$/i.test(file)
+    );
+    const videos = relativeFiles.filter((file) =>
+      /\.(mp4|webm|mov)$/i.test(file)
+    );
 
-    const video = mp4 ? `/${safeDir}/${encodeURI(mp4)}`.replace(/\/+/g, "/") : null;
-    const image = !video ? (png ? `/${safeDir}/${encodeURI(png)}`.replace(/\/+/g, "/") : (jpg ? `/${safeDir}/${encodeURI(jpg)}`.replace(/\/+/g, "/") : null)) : null;
-
-    return NextResponse.json({ video, image });
+    // Return the assets with the correct property names
+    return NextResponse.json({ images, videos });
+    
   } catch (err) {
-    return NextResponse.json({ video: null, image: null });
+    console.error("Failed to list media assets:", err);
+    return NextResponse.json(
+      { error: "Failed to list media assets" },
+      { status: 500 }
+    );
   }
 }

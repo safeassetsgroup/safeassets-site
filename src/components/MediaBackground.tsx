@@ -2,52 +2,29 @@
 
 import { ReactNode, useEffect, useState } from "react";
 
-type Props = {
-  folder?: string;
-  imageUrl?: string; // optional override to use a specific image instead of fetching folder
-  videoUrl?: string; // optional override to use a specific video
-  children?: ReactNode;
+// Define a specific type for the props
+type MediaBackgroundProps = {
+  folder: string;
+  children: ReactNode;
   height?: string;
-  className?: string;
   padBottomClass?: string;
+  className?: string;
 };
-
-type MediaResponse = { video: string | null; image: string | null };
 
 export default function MediaBackground({
   folder,
-  imageUrl: imageUrlProp,
-  videoUrl: videoUrlProp,
   children,
-  height = "h-[80vh]",
+  height = "h-auto",
+  padBottomClass = "pb-0",
   className = "",
-  padBottomClass = "pb-28",
-}: Props) {
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+}: MediaBackgroundProps) {
+  const [assets, setAssets] = useState<{ images: string[]; videos: string[] }>({
+    images: [],
+    videos: [],
+  });
   const [videoErrored, setVideoErrored] = useState(false);
 
   useEffect(() => {
-    if (videoUrlProp) {
-      setVideoUrl(videoUrlProp);
-      setImageUrl(null);
-      setVideoErrored(false);
-      return;
-    }
-
-    if (imageUrlProp) {
-      setImageUrl(imageUrlProp);
-      setVideoUrl(null);
-      setVideoErrored(false);
-      return;
-    }
-
-    if (!folder) {
-      setVideoUrl(null);
-      setImageUrl(null);
-      return;
-    }
-
     const controller = new AbortController();
     let mounted = true;
 
@@ -57,16 +34,22 @@ export default function MediaBackground({
           signal: controller.signal,
         });
         if (!res.ok) throw new Error("fetch failed");
-        const data = (await res.json()) as MediaResponse;
+
+        // FIX: The API returns arrays named 'images' and 'videos'.
+        // This now correctly handles that data structure.
+        const data = (await res.json()) as { images: string[]; videos: string[] };
         if (!mounted) return;
-        setVideoUrl(data.video ?? null);
-        setImageUrl(data.image ?? null);
+
+        // Set the state directly with the arrays from the API response.
+        setAssets({
+          videos: data.videos || [],
+          images: data.images || [],
+        });
         setVideoErrored(false);
       } catch (err: any) {
         if (err.name === "AbortError") return;
         if (!mounted) return;
-        setVideoUrl(null);
-        setImageUrl(null);
+        setAssets({ images: [], videos: [] });
         setVideoErrored(true);
       }
     })();
@@ -75,14 +58,14 @@ export default function MediaBackground({
       mounted = false;
       controller.abort();
     };
-  }, [folder, imageUrlProp, videoUrlProp]);
+  }, [folder]);
 
-  const showVideo = !!videoUrl && !videoErrored;
-  const showImage = !showVideo && !!imageUrl;
+  const showVideo = (assets.videos || []).length > 0 && !videoErrored;
+  const showImage = !showVideo && (assets.images || []).length > 0;
 
   const handleVideoError = () => {
+    console.warn("Video failed to load, falling back to image.");
     setVideoErrored(true);
-    setVideoUrl(null);
   };
 
   return (
@@ -94,15 +77,15 @@ export default function MediaBackground({
           loop
           muted
           playsInline
-          poster={imageUrl ?? undefined}
+          poster={assets.images[0] ?? undefined}
           onError={handleVideoError}
         >
-          <source src={videoUrl ?? ""} type="video/mp4" />
+          <source src={assets.videos[0] ?? ""} type="video/mp4" />
         </video>
       )}
 
       {!showVideo && showImage && (
-        <img src={imageUrl ?? ""} alt="Background" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={assets.images[0] ?? ""} alt="Background" className="absolute inset-0 w-full h-full object-cover" />
       )}
 
       {!showVideo && !showImage && <div className="absolute inset-0 bg-gradient-to-b from-gray-800 to-gray-900" />}

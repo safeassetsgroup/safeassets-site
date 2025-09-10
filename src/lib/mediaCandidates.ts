@@ -73,3 +73,16 @@ export async function probeCandidate(url: string) {
 
   return preloadImage(url);
 }
+
+export function getMediaCandidates(assets: { images: string[]; videos: string[] }, folder: string) {
+  const images = assets.images
+    .filter((f) => f.startsWith(`${folder}/`))
+    .map((f) => `/${f}`);
+  
+  const videos = assets.videos
+    .filter((f) => f.startsWith(`${folder}/`))
+    .map((f) => `/${f}`);
+
+  // FIX: Return 'images' and 'videos' to match what the component expects.
+  return { images, videos };
+}

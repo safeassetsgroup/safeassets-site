@@ -1,9 +1,51 @@
 "use client";
 
 import { ChevronRight, Factory, Tractor, Wrench, Truck, ShieldCheck } from 'lucide-react';
-import React from 'react';
-import { INDUSTRIES } from '@/data/industries';
-import Link from 'next/link';
+import React, { useState } from 'react';
+import { Industry, INDUSTRIES } from "@/data/industries";
+import Image from "next/image";
+import Link from "next/link";
+
+// Define a specific type for the props instead of using 'any'
+type IndustryCardProps = {
+  industry: Industry;
+  idx: number;
+};
+
+function IndustryCard({ industry, idx }: IndustryCardProps) {
+  const [imgSrc, setImgSrc] = useState(`/industries/sm/${industry.slug}.jpg`);
+
+  return (
+    <Link
+      key={idx}
+      href={industry.link}
+      className="flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-transform duration-300 ease-in-out border-t-4 border-b-4 border-transparent hover:border-blue-500"
+    >
+      <div className="mb-4">
+        <Image
+          src={imgSrc}
+          alt={industry.label}
+          width={100}
+          height={100}
+          className="w-24 h-24 object-contain mx-auto"
+          onError={() => setImgSrc('/industries/sm/default.jpg')}
+        />
+      </div>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        {industry.label}
+      </h2>
+      <p className="text-gray-600 mb-6 flex-grow">
+        {industry.description}
+      </p>
+      <div
+        className="mt-auto inline-flex items-center text-blue-600 font-semibold transition-colors duration-200 group-hover:text-blue-800"
+      >
+        Learn More
+        <ChevronRight className="ml-1 w-4 h-4" />
+      </div>
+    </Link>
+  );
+}
 
 // The main React component for the Industries page.
 export default function IndustriesPage() {
@@ -24,27 +66,7 @@ export default function IndustriesPage() {
       {/* Grid of Industry Cards */}
       <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {INDUSTRIES.map((industry, index) => (
-          <Link
-            key={index}
-            href={industry.link}
-            className="flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-transform duration-300 ease-in-out border-t-4 border-b-4 border-transparent hover:border-blue-500"
-          >
-            <div className="mb-4">
-              {industry.icon}
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {industry.label}
-            </h2>
-            <p className="text-gray-600 mb-6 flex-grow">
-              {industry.description}
-            </p>
-            <div
-              className="mt-auto inline-flex items-center text-blue-600 font-semibold transition-colors duration-200 group-hover:text-blue-800"
-            >
-              Learn More
-              <ChevronRight className="ml-1 w-4 h-4" />
-            </div>
-          </Link>
+          <IndustryCard key={index} industry={industry} idx={index} />
         ))}
       </div>
 
