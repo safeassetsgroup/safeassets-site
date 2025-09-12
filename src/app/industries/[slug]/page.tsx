@@ -33,7 +33,7 @@ function MediaPlaceholder({
             />
           )}
           <span className="text-xs text-gray-700/80">
-            {title ? `Add image for “${title}”` : "Add image"}
+            {title ? `Add image for “${title}”` : ""}
           </span>
         </div>
       </div>
@@ -54,7 +54,7 @@ export default async function IndustryPage({
   if (!industry) notFound();
 
   const heroImg: string | undefined =
-    (industry as any).heroImage ?? (industry.slug ? `/industries/${industry.slug}/hero.jpg` : undefined);
+    (industry as any).imageSrc ?? (industry.slug ? `/industries/${industry.slug}/hero.jpg` : undefined);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-16 px-4 sm:px-6 lg:px-8">
@@ -87,7 +87,7 @@ export default async function IndustryPage({
       {/* Solutions */}
       <div className="w-full max-w-6xl space-y-12">
         {industry.solutions.map((solution: any, index: number) => {
-          const img: string | undefined = solution.image;
+          const img: string | undefined = solution.imageSrc;
           const alt = solution.imageAlt ?? `${industry.label} – ${solution.heading}`;
           return (
             <div
@@ -118,7 +118,6 @@ export default async function IndustryPage({
                       <MediaPlaceholder
                         icon={industry.icon}
                         title={solution.heading}
-                        website={(industry as any).website}
                         aspectClass="aspect-[4/3]"
                       />
                     )}

@@ -48,7 +48,7 @@ function IndustryCard({ industry, idx }: IndustryCardProps) {
 }
 
 // The main React component for the Industries page.
-export default function IndustriesPage() {
+export default function IndustryGrid() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-16 px-4 sm:px-6 lg:px-8">
       {/* Hero Section */}

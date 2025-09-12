@@ -1,43 +1,36 @@
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
-import MediaBackground from "./MediaBackground";
+import HeroBackground from "./HeroBackground";
 import IndustriesScroll from "./IndustriesScroll";
 
 export default function Hero() {
   return (
-    <MediaBackground folder="hero" height="h-[80vh]" padBottomClass="pb-28">
-      <div className="text-left">
-        <Image src="/brand/logo.png" alt="Logo" width={220} height={66} priority />
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 mt-6">
-          Advanced Asset Management for{" "}
-          <span className="text-blue-600">Industries</span>
-        </h1>
-        <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-xl">
-          Private, connected and verifiable CMMS/ERP — designed for construction, agriculture,
-          transport, energy, defence & strata.
-        </p>
+    <div className="relative w-full h-[calc(100vh-4rem)] overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <HeroBackground
+          videoSrc="https://gakdaifdrumuvkttklha.supabase.co/storage/v1/object/public/hero_images/hero-video.mp4"
+          imageSrc="https://gakdaifdrumuvkttklha.supabase.co/storage/v1/object/public/hero_images/Hero.jpg"
+          alt="Background of industrial equipment"
+        />
+        <div className="absolute inset-0 bg-black/60" />
+      </div>
 
-        <div className="mt-8 flex flex-wrap gap-4">
-          <Link
-            href="/contact"
-            className="inline-flex items-center px-6 py-3 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
-          >
-            Talk to us
-          </Link>
-          <Link
-            href="/industries"
-            className="inline-flex items-center px-6 py-3 rounded-md border border-blue-600 text-blue-600 font-semibold bg-white transition-colors hover:bg-blue-50"
-          >
-            Browse industries
-          </Link>
+      <div className="relative z-10 flex flex-col items-start justify-center h-full text-left text-white px-4 md:px-12 lg:px-24">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
+          Advanced Asset Management for Industries
+        </h1>
+        <p className="max-w-2xl text-lg md:text-xl text-slate-300 mb-8">
+          Private, connected and verifiable CMMS/ERP - designed for construction,
+          agriculture, transport, energy, defence & strata.
+        </p>
+        <div className="flex gap-4">
+          <button className="btn-primary">Talk to us</button>
+          <button className="bg-white/10 backdrop-blur-sm text-white font-semibold py-3 px-6 rounded-full hover:bg-white/20 transition">
+            Browse Industries
+          </button>
         </div>
       </div>
-
-      <div className="absolute bottom-0 left-0 w-full">
+      <div className="absolute bottom-0 left-0 right-0 z-20">
         <IndustriesScroll />
       </div>
-    </MediaBackground>
+    </div>
   );
 }

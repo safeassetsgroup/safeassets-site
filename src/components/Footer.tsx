@@ -55,7 +55,7 @@ export default function Footer() {
             <ul className="mt-4 space-y-3">
               {INDUSTRIES.map((i) => (
                 <li key={i.slug}>
-                  <Link className="hover:text-white" href={`/industries#${i.slug}`}>
+                  <Link className="hover:text-white" href={`/industries/${i.slug}`}>
                     {i.label}
                   </Link>
                 </li>
