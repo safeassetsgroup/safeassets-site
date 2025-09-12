@@ -109,7 +109,7 @@ function Card({ industry }: { industry: Industry }) {
 export default function IndustriesScroll() {
   // Update these as you wish; only "website" is needed to auto-fetch logos.
   const industries: Industry[] = [
-    { name: "Agriculture",        description: "Farming asset management",      website: "bigdutchman.asia },
+    { name: "Agriculture",        description: "Farming asset management",      website: "bigdutchman.asia" },
     { name: "Construction",       description: "Construction tools tracking",   website: "xcmg.net.au" },
     { name: "Transport",          description: "Logistics solutions",           website: "deanetransport.com.au" },
     { name: "Energy",             description: "Energy asset monitoring",       website: "windenergy.org.nz" },
