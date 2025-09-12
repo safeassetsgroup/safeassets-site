@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@headlessui/react": "^2.2.7",
     "@supabase/supabase-js": "^2.56.0",
     "lucide-react": "^0.542.0",
+=======
+    "@supabase/supabase-js": "^2.56.1",
+>>>>>>> d21afa49a30fe1e15ed39b8ebf187f28457c78d3
     "next": "15.4.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
