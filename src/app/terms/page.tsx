@@ -64,7 +64,7 @@ export default function TermsPage() {
           <h2>9. Contact</h2>
           <p>
             For any questions about these Terms, please contact us at{" "}
-            <a href="mailto:admin@safeassets.com.au">admin@safeassets.com.au</a>.
+            <a href="mailto:contact@safeassets.com.au">contact@safeassets.com.au</a>.
           </p>
         </div>
       </div>

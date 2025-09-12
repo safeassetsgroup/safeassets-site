@@ -18,7 +18,7 @@ export default function Footer() {
               SAFE<span className="text-orange-500">ASSETS</span> GROUP
             </h3>
             <p className="mt-4 text-slate-300">
-              Private, connected and verifiable CMMS/ERP — designed for construction,
+              Private, connected and verifiable systems — designed for construction,
               agriculture, transport, energy, defence & strata industries.
             </p>
 
@@ -28,14 +28,14 @@ export default function Footer() {
                 <svg className="h-5 w-5 text-orange-500 mt-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5Z" />
                 </svg>
-                <span>Australia &amp; New Zealand</span>
+                <span>Australia &amp; Global</span>
               </li>
               <li className="flex items-start gap-3">
                 {/* phone icon */}
                 <svg className="h-5 w-5 text-orange-500 mt-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M6.6 10.8c1.2 2.4 3.2 4.4 5.6 5.6l2-2a1 1 0 0 1 1-.24c1.1.37 2.3.57 3.5.57a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1C11.6 20 4 12.4 4 3a1 1 0 0 1 1-1h3.27a1 1 0 0 1 1 1c0 1.2.2 2.4.57 3.5a1 1 0 0 1-.24 1l-2 2Z" />
                 </svg>
-                <span>+61 (0) 123 456 789</span>
+                <span>0419 283 977</span>
               </li>
               <li className="flex items-start gap-3">
                 {/* email icon */}

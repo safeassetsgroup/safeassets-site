@@ -148,7 +148,7 @@ export default function ContactPage() {
                   <div>
                     <div className="font-medium text-gray-900">Email</div>
                     <a className="text-blue-700 hover:underline" href="mailto:admin@safeassets.group">
-                      admin@safeassets.group
+                      contact@safeassets.group
                     </a>
                   </div>
                 </li>
@@ -159,7 +159,7 @@ export default function ContactPage() {
                   <div>
                     <div className="font-medium text-gray-900">Phone</div>
                     <a className="text-blue-700 hover:underline" href="tel:0419 283 977">
-                      +61 1300 000 000
+                      0419 283 977
                     </a>
                   </div>
                 </li>

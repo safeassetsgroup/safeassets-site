@@ -18,7 +18,7 @@ export default function Hero() {
           Advanced Asset Management for Industries
         </h1>
         <p className="max-w-2xl text-lg md:text-xl text-slate-300 mb-8">
-          Private, connected and verifiable CMMS/ERP - designed for construction,
+          Private, connected and verifiable systemes - designed for construction,
           agriculture, transport, energy, defence & strata.
         </p>
         <div className="flex gap-4">
