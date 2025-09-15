@@ -109,12 +109,12 @@ function Card({ industry }: { industry: Industry }) {
 export default function IndustriesScroll() {
   // Update these as you wish; only "website" is needed to auto-fetch logos.
   const industries: Industry[] = [
-    { name: "Agriculture",        description: "Farming asset management",      website: "bigdutchman.asia" },
-    { name: "Construction",       description: "Construction tools tracking",   website: "xcmg.net.au" },
-    { name: "Transport",          description: "Logistics solutions",           website: "deanetransport.com.au" },
-    { name: "Energy",             description: "Energy asset monitoring",       website: "windenergy.org.nz" },
-    { name: "Defence",            description: "Defence systems",               website: "military.africa" },
-    { name: "Strata",             description: "Property management",           website: "curtisstrata.com.au" },
+    { name: "Agriculture",        description: "Farming asset management",      website: "bigdutchman.asi" },
+    { name: "Construction",       description: "Construction tools tracking",   website: "xcmg.net.a" },
+    { name: "Transport",          description: "Logistics solutions",           website: "deanetransport.com.a" },
+    { name: "Energy",             description: "Energy asset monitoring",       website: "windenergy.org.n" },
+    { name: "Defence",            description: "Defence systems",               website: "military.afri" },
+    { name: "Strata",             description: "Property management",           website: "curtisstrata.com.a" },
   ];
 
   // Duplicate for seamless marquee

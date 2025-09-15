@@ -222,7 +222,7 @@ function OffersContent() {
     setErrorMsg(null);
 
     try {
-      // TODO: Replace with your real API (e.g., /api/offers) that emails web@safeassets.group
+      // TODO: Replace with your real API (e.g., /api/offers) that emails sales@safeassets.group
       await new Promise((r) => setTimeout(r, 1200));
       setShowSuccessModal(true);
 
