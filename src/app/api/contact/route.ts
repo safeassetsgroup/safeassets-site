@@ -10,7 +10,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email not configured (missing RESEND_API_KEY)" }, { status: 500 });
     }
 
-    const { contact, business, assets, token } = await req.json();
+    const body = await req.json();
+    const token = body?.token;
+
+    // Support both contact page and offers page payloads
+    // Contact page: { name, email, phone, topic, message }
+    // Offers page: full structured form, we map to contact/business/assets
+    const isOffers = !!(body?.assets || body?.contactEmail);
+    const contact = isOffers
+      ? {
+          name: `${body?.name || ""} ${body?.surname || ""}`.trim() || body?.contactName,
+          email: body?.contactEmail,
+          phone: body?.contactNumber,
+        }
+      : {
+          name: body?.name,
+          email: body?.email,
+          phone: body?.phone,
+        };
+    const business = isOffers
+      ? { name: body?.companyName, abn: body?.abn, address: body?.companyAddress, site: body?.site }
+      : undefined;
+    const assets = isOffers ? body?.assets : undefined;
 
     if (!contact?.email) {
       return NextResponse.json({ error: "Contact email is required" }, { status: 400 });
@@ -32,22 +53,34 @@ export async function POST(req: Request) {
       }
     }
 
-    const from = process.env.EMAIL_FROM!;
-    const to = process.env.EMAIL_TO!;
-    if (!from || !to) {
-      return NextResponse.json({ error: "EMAIL_FROM or EMAIL_TO not set" }, { status: 500 });
+    const from = process.env.EMAIL_FROM;
+    const to = process.env.EMAIL_TO || "sales@safeassets.group";
+    if (!from) {
+      return NextResponse.json({ error: "EMAIL_FROM not set" }, { status: 500 });
     }
 
-    const subject = `Special Offer submission from ${contact?.name || "Unknown"}`;
-    const text = [
-      `Contact: ${contact?.name || "-"} | ${contact?.email || "-"} | ${contact?.phone || "-"}`,
-      `Business: ${business?.name || "-"} | ABN: ${business?.abn || "-"}`,
-      "Assets:",
-      ...(assets || []).map(
-        (a: any, i: number) =>
-          `  ${i + 1}. #${a.assetNumber || "-"} | ${a.make || "-"} ${a.model || "-"} | hours: ${a.hours || "-"} | telemetry: ${a.telemetry || "-"}`
-      ),
-    ].join("\n");
+    const isSimpleContact = !isOffers;
+    const plan = isOffers ? (body?.selectedPlan === "professional" ? "Professional" : body?.selectedPlan === "essential" ? "Essential" : undefined) : undefined;
+    const subject = isSimpleContact
+      ? `Website enquiry from ${contact?.name || "Unknown"}`
+      : `Special Offer submission from ${contact?.name || "Unknown"}${plan ? ` [Plan: ${plan}]` : ""}`;
+    const text = isSimpleContact
+      ? [
+          `Name: ${contact?.name || "-"}`,
+          `Email: ${contact?.email || "-"}`,
+          `Phone: ${contact?.phone || "-"}`,
+          `Topic: ${body?.topic || "-"}`,
+          `Message: ${body?.message || "-"}`,
+        ].join("\n")
+      : [
+          `Contact: ${contact?.name || "-"} | ${contact?.email || "-"} | ${contact?.phone || "-"}`,
+          `Business: ${business?.name || "-"} | ABN: ${business?.abn || "-"}${plan ? ` | Plan: ${plan}` : ""}`,
+          "Assets:",
+          ...(assets || []).map(
+            (a: any, i: number) =>
+              `  ${i + 1}. #${a.unitNumber || a.assetNumber || "-"} | ${a.make || "-"} ${a.model || "-"} | SMU/hours: ${a.smu || a.hours || "-"} | site: ${a.site || "-"}`
+          ),
+        ].join("\n");
 
     const html = `
       <!DOCTYPE html>
@@ -67,7 +100,7 @@ export async function POST(req: Request) {
       </head>
       <body>
         <div class="container">
-          <h1>New Pricing Request</h1>
+          <h1>${isSimpleContact ? "New Website Enquiry" : "New Pricing Request"}</h1>
           <p>A new pricing request has been submitted through the website.</p>
           
           <h2>Contact Details</h2>
@@ -75,11 +108,22 @@ export async function POST(req: Request) {
           <p><span class="field-label">Email:</span><br><span class="field-value">${contact?.email || "-"}</span></p>
           <p><span class="field-label">Phone:</span><br><span class="field-value">${contact?.phone || "-"}</span></p>
           
-          <h2>Business Details</h2>
-          <p><span class="field-label">Company:</span><br><span class="field-value">${business?.name || "-"}</span></p>
-          <p><span class="field-label">ABN:</span><br><span class="field-value">${business?.abn || "-"}</span></p>
+          ${isSimpleContact ? "" : "<h2>Business Details</h2>"}
+          ${
+            isSimpleContact
+              ? ""
+              : `<p><span class="field-label">Company:</span><br><span class="field-value">${business?.name || "-"}</span></p>
+          <p><span class="field-label">ABN:</span><br><span class="field-value">${business?.abn || "-"}</span></p>`
+          }
 
-          <h2>Assets</h2>
+          ${
+            isSimpleContact
+              ? `<h2>Message</h2>
+          <p class="field-value">${(body?.message || "-")
+            .toString()
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")}</p>`
+              : `<h2>Assets</h2>
           <table>
             <thead>
               <tr>
@@ -87,8 +131,8 @@ export async function POST(req: Request) {
                 <th>Asset Number</th>
                 <th>Make</th>
                 <th>Model</th>
-                <th>Hours</th>
-                <th>Telemetry</th>
+                <th>SMU (hrs)</th>
+                <th>Site</th>
               </tr>
             </thead>
             <tbody>
@@ -97,17 +141,18 @@ export async function POST(req: Request) {
                   (a: any, i: number) => `
                 <tr>
                   <td>${i + 1}</td>
-                  <td>${a.assetNumber || "-"}</td>
+                  <td>${a.unitNumber || a.assetNumber || "-"}</td>
                   <td>${a.make || "-"}</td>
                   <td>${a.model || "-"}</td>
-                  <td>${a.hours || "-"}</td>
-                  <td>${a.telemetry || "-"}</td>
+                  <td>${a.smu || a.hours || "-"}</td>
+                  <td>${a.site || "-"}</td>
                 </tr>
               `
                 )
                 .join("")}
             </tbody>
-          </table>
+          </table>`
+          }
         </div>
       </body>
       </html>

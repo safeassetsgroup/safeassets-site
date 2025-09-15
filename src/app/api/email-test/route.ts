@@ -5,7 +5,7 @@ export async function GET() {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { error } = await resend.emails.send({
       from: process.env.EMAIL_FROM!,
-      to: process.env.EMAIL_TO!,
+      to: process.env.EMAIL_TO || "sales@safeassets.group",
       subject: "SafeAssets test email",
       text: "This is a test from /api/email-test.",
     });

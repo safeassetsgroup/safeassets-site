@@ -69,7 +69,7 @@ export default function PrivacyPage() {
           </ul>
           <p>
             To exercise any of these rights, please contact us at{" "}
-            <a href="mailto:contact@safeassets.group">contact@safeassets.group</a>.
+            <a href="mailto:sales@safeassets.group">sales@safeassets.group</a>.
           </p>
 
           <h2>8. Changes to This Policy</h2>

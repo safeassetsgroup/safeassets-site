@@ -222,8 +222,25 @@ function OffersContent() {
     setErrorMsg(null);
 
     try {
-      // TODO: Replace with your real API (e.g., /api/offers) that emails sales@safeassets.group
-      await new Promise((r) => setTimeout(r, 1200));
+      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+      const g = typeof window !== "undefined" ? (window as any).grecaptcha : undefined;
+      const token = g && siteKey ? await g.execute(siteKey, { action: "submit" }) : undefined;
+
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          token,
+          selectedPlan,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setErrorMsg(data.error || "Submission failed.");
+        return;
+      }
       setShowSuccessModal(true);
 
       // Reset form
