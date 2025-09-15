@@ -158,7 +158,14 @@ export async function POST(req: Request) {
       </html>
     `;
 
-    const result = await resend.emails.send({ from, to, subject, text, html });
+    const result = await resend.emails.send({
+      from,
+      to,
+      subject,
+      text,
+      html,
+      replyTo: contact?.email ? [contact.email] : undefined,
+    });
 
     if ((result as any)?.error) {
       console.error("Resend error:", (result as any).error);
