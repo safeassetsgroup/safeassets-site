@@ -46,7 +46,7 @@ export default function TopNav() {
         </div>
 
         {/* Right side (desktop) */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-4">
           <button
             type="button"
             aria-disabled="true"
@@ -58,6 +58,15 @@ export default function TopNav() {
               Coming&nbsp;Soon
             </span>
           </button>
+          <a href="https://tradem8.com.au" target="_blank" rel="noopener noreferrer" className="flex items-center">
+            <Image
+              src="https://gakdaifdrumuvkttklha.supabase.co/storage/v1/object/public/industries-_scroll/Tradem8Logo.png"
+              alt="Tradem8 Logo"
+              width={100}
+              height={32}
+              className="h-8 w-auto object-contain"
+            />
+          </a>
         </div>
 
         {/* Hamburger (mobile) */}

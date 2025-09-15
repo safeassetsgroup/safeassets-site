@@ -10,7 +10,7 @@ export default function IndustryGrid() {
             Our Expertise
           </h2>
           <p className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Trusted by leaders in every major industry
+            Partnering with businesses of every size to improve reliability and performance.
           </p>
           <p className="mt-6 text-lg leading-8 text-slate-300">
             From construction and agriculture to transport and defence, our
