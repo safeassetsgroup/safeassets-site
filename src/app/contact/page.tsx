@@ -148,7 +148,7 @@ export default function ContactPage() {
                   <div>
                     <div className="font-medium text-gray-900">Email</div>
                     <a className="text-blue-700 hover:underline" href="mailto:admin@safeassets.group">
-                      contact@safeassets.group
+                      sales@safeassets.group
                     </a>
                   </div>
                 </li>
@@ -216,7 +216,7 @@ export default function ContactPage() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={cnInput(!!(touched.name && errors.name))}
-                    placeholder="John Doe"
+                    placeholder="Name"
                     disabled={loading}
                     required
                   />
@@ -264,7 +264,7 @@ export default function ContactPage() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={cnInput(!!(touched.phone && errors.phone))}
-                    placeholder="0419 283 977"
+                    placeholder="0420 123 456"
                     disabled={loading}
                     required
                   />

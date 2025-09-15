@@ -15,11 +15,10 @@ export default function Hero() {
 
       <div className="relative z-10 flex flex-col items-start justify-center h-full text-left text-white px-4 md:px-12 lg:px-24">
         <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-          Advanced Asset Management for Industries
+          Partnering for Reliability and Performance
         </h1>
         <p className="max-w-2xl text-lg md:text-xl text-slate-300 mb-8">
-          Private, connected and verifiable systemes - designed for construction,
-          agriculture, transport, energy, defence & strata.
+          Reliable, data-driven systems — designed to support construction, agriculture, transport, energy, defence, and strata.
         </p>
         <div className="flex gap-4">
           <button className="btn-primary">Talk to us</button>

@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Briefcase, Handshake, ShieldCheck } from 'lucide-react';
+import { Briefcase, Handshake, ShieldCheck, Eye } from 'lucide-react';
 
 // The main React component for the About page.
 export default function AboutPage() {
@@ -20,12 +20,29 @@ export default function AboutPage() {
         </p>
       </div>
 
+      {/* Our Vision Section */}
+      <div className="w-full max-w-6xl mb-16">
+        <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 transition-shadow duration-300 hover:shadow-xl">
+          <div className="flex flex-col md:flex-row items-start gap-6">
+            <div className="flex-1">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6 flex items-center justify-center">
+                <Eye className="h-8 w-8 text-blue-600 mr-4" />
+                Our Vision
+              </h2>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                To redefine equipment asset management through genuine partnerships, where we plan alongside our customers and suppliers, providing the best reliability strategies and connected solutions that build trust, improve performance, and deliver sustainable value.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Our Core Values Section */}
       <div className="w-full max-w-6xl space-y-12">
         <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 transition-shadow duration-300 hover:shadow-xl">
           <div className="flex flex-col md:flex-row items-start gap-6">
             <div className="flex-1">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
                 Our Core Values
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 text-gray-700">

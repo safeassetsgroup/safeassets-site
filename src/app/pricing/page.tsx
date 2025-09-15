@@ -40,6 +40,7 @@ export default function Page() {
             Partner Support Agreement Plan
           </h1>
           <p className="mt-3 text-slate-600">Choose a plan that fits. Upgrade any time.</p>
+          <p className="mt-2 text-sm font-semibold text-emerald-600"># Fleet discounts available</p>
         </div>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
@@ -50,7 +51,7 @@ export default function Page() {
             </div>
             <div className="p-8">
               <div className="text-center">
-                <p className="text-sm font-medium text-slate-600">Essential (Most Popular)</p>
+                <p className="text-sm font-medium text-slate-600">Essential* (Most Popular)</p>
                 <div className="mt-2">
                   <Price amount="33" />
                 </div>
@@ -61,7 +62,7 @@ export default function Page() {
                   >
                     Get This Plan
                   </Link>
-                  <p className="mt-3 text-center text-xs text-slate-500">Prices in AUD; GST excluded.</p>
+                  <p className="mt-3 text-center text-xs text-slate-500">Prices in AUD; GST included.</p>
                 </div>
               </div>
 
@@ -78,9 +79,9 @@ export default function Page() {
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="p-8">
               <div className="text-center">
-                <p className="text-sm font-medium text-slate-600">Professional</p>
+                <p className="text-sm font-medium text-slate-600">Professional*</p>
                 <div className="mt-2">
-                  <Price amount="55" />
+                  <Price amount="TBA" />
                 </div>
                 <div className="mt-6">
                   <Link
@@ -89,7 +90,7 @@ export default function Page() {
                   >
                     Select Plan
                   </Link>
-                  <p className="mt-3 text-center text-xs text-slate-500">Prices in AUD; GST excluded.</p>
+                  <p className="mt-3 text-center text-xs text-slate-500">Prices in AUD; GST included.</p>
                 </div>
               </div>
 
@@ -111,6 +112,12 @@ export default function Page() {
           <Tick>Australian-based support</Tick>
           <Tick>Mon–Fri monitoring 9am–5pm</Tick>
           <Tick>Fast, secure &amp; dependable</Tick>
+        </div>
+
+        <div className="mt-12 text-center">
+          <p className="text-sm text-slate-600">
+            * Telemetry is supplied by the customer at their own costs or Safe Assets Group can supply at an additional cost.
+          </p>
         </div>
       </section>
     </main>

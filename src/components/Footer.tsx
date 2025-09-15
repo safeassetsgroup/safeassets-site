@@ -88,7 +88,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-10 pt-6 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between text-sm text-slate-400">
-          <p>© {year} SafeAssets Group. All rights reserved.</p>
+          <p>© {year} SafeAssets Group Pty Ltd. All rights reserved.</p>
           <div className="flex items-center gap-6 mt-3 md:mt-0">
             <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-white">Terms of Service</Link>
