@@ -110,6 +110,8 @@ export default function AboutPage() {
   );
 }
 
+// Triggering a new build
+
 export async function GET() {
   const assets = [
     {
