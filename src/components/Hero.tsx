@@ -1,3 +1,4 @@
+import Link from "next/link";
 import HeroBackground from "./HeroBackground";
 import IndustriesScroll from "./IndustriesScroll";
 
@@ -21,10 +22,10 @@ export default function Hero() {
           Reliable, data-driven systems — designed to support construction, agriculture, transport, energy, defence, and strata.
         </p>
         <div className="flex gap-4">
-          <button className="btn-primary">Talk to us</button>
-          <button className="bg-white/10 backdrop-blur-sm text-white font-semibold py-3 px-6 rounded-full hover:bg-white/20 transition">
+          <Link href="/contact" className="btn-primary">Talk to us</Link>
+          <Link href="/industries" className="bg-white/10 backdrop-blur-sm text-white font-semibold py-3 px-6 rounded-full hover:bg-white/20 transition">
             Browse Industries
-          </button>
+          </Link>
         </div>
       </div>
       <div className="absolute bottom-0 left-0 right-0 z-20">

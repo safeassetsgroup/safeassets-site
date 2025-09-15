@@ -22,7 +22,7 @@ function toDomain(input?: string): string | null {
   }
 }
 
-/** Build a logo source list: explicit → Clearbit → Google s2 */
+/** Build a logo source list: explicit → Clearbit → Google s2 → default */
 function useLogoSources(website?: string, explicit?: string, size = 96) {
   const domain = useMemo(() => toDomain(website), [website]);
   return useMemo(() => {
@@ -32,6 +32,7 @@ function useLogoSources(website?: string, explicit?: string, size = 96) {
       arr.push(`https://logo.clearbit.com/${domain}`);
       arr.push(`https://www.google.com/s2/favicons?domain=${domain}&sz=${size}`);
     }
+    arr.push("https://gakdaifdrumuvkttklha.supabase.co/storage/v1/object/public/industries-_scroll/partnerlogo_scroll.png"); // Default fallback
     return arr;
   }, [domain, explicit, size]);
 }
