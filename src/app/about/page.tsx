@@ -90,7 +90,7 @@ export default function AboutPage() {
 
       {/* Call to Action Section */}
       <div className="w-full max-w-6xl mt-16 text-center">
-        <div className="p-10 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl shadow-xl">
+        <div className="p-10 bg-slate-800 rounded-2xl shadow-xl">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
             Ready to Partner with Us?
           </h2>
@@ -99,7 +99,7 @@ export default function AboutPage() {
           </p>
           <a
             href="/contact"
-            className="inline-block bg-white text-blue-800 font-bold text-lg px-8 py-4 rounded-full shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
+            className="inline-block bg-orange-500 text-slate-900 font-bold text-lg px-8 py-4 rounded-full shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
           >
             Get in Touch
           </a>
